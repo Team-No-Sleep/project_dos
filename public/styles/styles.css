@@ -1,3 +1,10 @@
 .list-group-item {
   line-height: 2.5;
 }
+.btn-linkedIn{
+  background: url("../img/Sign-In-Large---Default.png") no-repeat;
+  cursor:pointer;
+  border:none;
+  width:430px;
+  height:80px;
+}

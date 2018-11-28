@@ -1,13 +1,15 @@
 var db = require("../models");
+var passport = require("passport");
 
 module.exports = function(app) {
   // Load index page
   app.get("/", function(req, res) {
-    console.log(db);
+    //console.log(db);
     db.Example.findAll({}).then(function(dbExamples) {
       res.render("index", {
         msg: "Welcome!",
-        examples: dbExamples
+        examples: dbExamples,
+        user: req.user
       });
     });
   });
@@ -21,6 +23,19 @@ module.exports = function(app) {
         example: dbExample
       });
     });
+  });
+
+  //let the user get authenticated to log into the account
+  app.get("/auth/linkedin", passport.authenticate("linkedin"), function() {
+    console.log("am i here?");
+    // The request will be redirected to LinkedIn for authentication, so this
+    // function will not be called.
+  });
+
+  //let the user logout
+  app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
   });
 
   // Render 404 page for any unmatched routes
