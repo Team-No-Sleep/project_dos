@@ -1,4 +1,5 @@
 var db = require("../models");
+var passport = require("passport");
 
 module.exports = function(app) {
   // Get all examples
@@ -23,4 +24,13 @@ module.exports = function(app) {
       res.json(dbExample);
     });
   });
+
+  //return the user the user to the login page
+  app.get(
+    "/auth/linkedin/callback",
+    passport.authenticate("linkedin", {
+      successRedirect: "/",
+      failureRedirect: "/login"
+    })
+  );
 };
