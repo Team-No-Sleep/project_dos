@@ -2,15 +2,15 @@ var db = require("../models");
 var passport = require("passport");
 
 module.exports = function(app) {
-  // Get all examples
-  app.get("/api/examples", function(req, res) {
-    db.Example.findAll({}).then(function(dbExamples) {
-      res.json(dbExamples);
+  // Get all jobs
+  app.get("/api/jobs", function(req, res) {
+    db.Job.findAll({}).then(function(dbJobs) {
+      res.json(dbJobs);
     });
   });
 
-  app.post("/api/examples", function(req, res) {
-    db.Example.create({
+  app.post("/api/jobs", function(req, res) {
+    db.Job.create({
       jobtitle: req.body.jobtitle,
       company: req.body.company,
       city: req.body.city,
@@ -18,17 +18,15 @@ module.exports = function(app) {
       date: req.body.date,
       snippet: req.body.snippet,
       url: req.body.url
-    }).then(function(dbExample) {
-      res.json(dbExample);
+    }).then(function(dbJob) {
+      res.json(dbJob);
     });
   });
 
-  // Delete an example by id
-  app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(
-      dbExample
-    ) {
-      res.json(dbExample);
+  // Delete a job by id
+  app.delete("/api/jobs/:id", function(req, res) {
+    db.Job.destroy({ where: { id: req.params.id } }).then(function(dbJob) {
+      res.json(dbJob);
     });
   });
 
@@ -37,7 +35,7 @@ module.exports = function(app) {
     "/auth/linkedin/callback",
     passport.authenticate("linkedin", {
       successRedirect: "/",
-      failureRedirect: "/login"
+      failureRedirect: "/"
     })
   );
 };
