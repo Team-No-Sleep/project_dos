@@ -97,3 +97,40 @@ var handleDeleteBtnClick = function() {
 // Add event listeners to the submit and delete buttons
 $submitBtn.on("click", handleFormSubmit);
 $exampleList.on("click", ".delete", handleDeleteBtnClick);
+
+/***************** Grabbing data from Indeed API *********************/
+
+// Placeholder queries
+var job = "full+stack+developer";
+var publisherId = "123456789";
+var location = "seattle%2C+wa";
+var limit = "10";
+var radius = "25";
+
+// Grabbing results
+var indeedQueryURL =
+  "http://api.indeed.com/ads/apisearch?publisher=" +
+  publisherId +
+  "&q=" +
+  job +
+  "&l=" +
+  location +
+  "&sort=&radius=" +
+  radius +
+  "&st=&jt=&start=&limit=" +
+  limit +
+  "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
+
+$.ajax({
+  url: indeedQueryURL,
+  method: "GET"
+}).then(function(response) {
+  // Add jobs to the database that shows up on the screen in the results?
+
+  for (var job in response) {
+    API.saveExample(job);
+  }
+});
+
+// once all job apis are added to database, then repopulate results of all 
+

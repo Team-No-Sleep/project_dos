@@ -9,9 +9,16 @@ module.exports = function(app) {
     });
   });
 
-  // Create a new example
   app.post("/api/examples", function(req, res) {
-    db.Example.create(req.body).then(function(dbExample) {
+    db.Example.create({
+      jobtitle: req.body.jobtitle,
+      company: req.body.company,
+      city: req.body.city,
+      state: req.body.state,
+      date: req.body.date,
+      snippet: req.body.snippet,
+      url: req.body.url
+    }).then(function(dbExample) {
       res.json(dbExample);
     });
   });
