@@ -5,6 +5,9 @@ var exphbs = require("express-handlebars");
 var db = require("./models");
 var keys = require("./keys");
 
+//var passport = require("passport");
+var LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
+
 var app = express();
 var PORT = process.env.PORT || 3000;
 
