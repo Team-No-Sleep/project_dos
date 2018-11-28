@@ -5,22 +5,20 @@ module.exports = function(app) {
   // Load index page
   app.get("/", function(req, res) {
     //console.log(db);
-    db.Example.findAll({}).then(function(dbExamples) {
+    db.Job.findAll({}).then(function(dbJobs) {
       res.render("index", {
         msg: "Welcome!",
-        examples: dbExamples,
+        jobs: dbJobs,
         user: req.user
       });
     });
   });
 
-  // Load example page and pass in an example by id
-  app.get("/example/:id", function(req, res) {
-    db.Example.findOne({ where: { id: req.params.id } }).then(function(
-      dbExample
-    ) {
-      res.render("example", {
-        example: dbExample
+  // Load job page and pass in an job by id
+  app.get("/job/:id", function(req, res) {
+    db.Job.findOne({ where: { id: req.params.id } }).then(function(dbJob) {
+      res.render("job", {
+        job: dbJob
       });
     });
   });

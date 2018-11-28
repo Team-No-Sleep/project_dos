@@ -12,19 +12,19 @@ var API = {
         "Content-Type": "application/json"
       },
       type: "POST",
-      url: "api/examples",
+      url: "api/jobs",
       data: JSON.stringify(example)
     });
   },
   getExamples: function() {
     return $.ajax({
-      url: "api/examples",
+      url: "api/jobs",
       type: "GET"
     });
   },
   deleteExample: function(id) {
     return $.ajax({
-      url: "api/examples/" + id,
+      url: "api/jobs/" + id,
       type: "DELETE"
     });
   }
@@ -100,10 +100,10 @@ $exampleList.on("click", ".delete", handleDeleteBtnClick);
 
 /***************** Grabbing data from Indeed API *********************/
 
-// Placeholder queries
+//Placeholder queries
 var job = "full+stack+developer";
 var publisherId = "123456789";
-var location = "seattle%2C+wa";
+var geoLocation = "seattle%2C+wa";
 var limit = "10";
 var radius = "25";
 
@@ -114,7 +114,7 @@ var indeedQueryURL =
   "&q=" +
   job +
   "&l=" +
-  location +
+  geoLocation +
   "&sort=&radius=" +
   radius +
   "&st=&jt=&start=&limit=" +
