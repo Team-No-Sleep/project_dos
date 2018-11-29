@@ -34,7 +34,7 @@ module.exports = function(app) {
   app.get(
     "/auth/linkedin/callback",
     passport.authenticate("linkedin", {
-      successRedirect: "/",
+      successRedirect: "/chat",
       failureRedirect: "/"
     })
   );

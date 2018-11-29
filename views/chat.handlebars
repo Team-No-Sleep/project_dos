@@ -1,0 +1,18 @@
+<div id="chat">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <img src="./img/watson_careers_logo430X160.png" />
+      </div>
+      <div class="col">
+        {{#if user}}
+        <p>Hello {{user.name.givenName}}</p>
+        <button id="logOut" onclick="logOut()" class="btn btn-primary btn-sm">Sign Out</button>
+        {{else}}
+        <button id="logIn" onclick="logIn()" class="btn btn-linkedIn btn-sm"></button>
+        {{/if}}</div>
+    </div>
+    <iframe width="350" height="430" src="https://console.dialogflow.com/api-client/demo/embedded/915cb787-abe5-4178-a254-debe8d18c0c8">
+    </iframe>
+  </div>
+</div>

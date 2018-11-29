@@ -14,6 +14,13 @@ module.exports = function(app) {
     });
   });
 
+  //load chat bot
+  app.get("/chat", function(req, res) {
+    res.render("chat", {
+      user: req.user
+    });
+  });
+
   // Load job page and pass in an job by id
   app.get("/job/:id", function(req, res) {
     db.Job.findOne({ where: { id: req.params.id } }).then(function(dbJob) {
