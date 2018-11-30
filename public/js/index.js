@@ -106,6 +106,7 @@ var publisherId = "123456789";
 var geoLocation = "seattle%2C+wa";
 var limit = "10";
 var radius = "25";
+var fullTime = true;
 
 // Grabbing results
 var indeedQueryURL =
@@ -123,11 +124,11 @@ var indeedQueryURL =
 
 var gitHubQueryURL =
   "https://jobs.github.com/positions.json?description=" +
-  query +
+  job +
   "&full_time=" +
   fullTime +
   "&location=" +
-  location +
+  geoLocation +
   "";
 
 $.ajax({
