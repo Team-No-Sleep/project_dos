@@ -153,19 +153,15 @@ $.ajax({
   }
 });
 
-// once all job apis are added to database, then repopulate results of all 
+// once all job apis are added to database, then repopulate results which will be sent to the carousel
 refreshExamples();
 
 // When a save button gets clicked then do a PUT operation to
 // make saved true. This doesn't work yet
-$(".save").on("click", function(event) {
-  var saveStatus = {
-    saved: true
-  };
-
+$(".save").on("click", function() {
   $.ajax("/api/jobs/" + this.id, {
     type: "PUT",
-    data: saveStatus
+    data: true
   }).then(function(res) {
     res.json();
   });
