@@ -17,7 +17,9 @@ module.exports = function(app) {
       state: req.body.state,
       date: req.body.date,
       snippet: req.body.snippet,
-      url: req.body.url
+      url: req.body.url,
+      saved: false,
+      applied: false
     }).then(function(dbJob) {
       res.json(dbJob);
     });
@@ -27,6 +29,16 @@ module.exports = function(app) {
   app.delete("/api/jobs/:id", function(req, res) {
     db.Job.destroy({ where: { id: req.params.id } }).then(function(dbJob) {
       res.json(dbJob);
+    });
+  });
+
+  app.put("/api/jobs/:id", function(req, res) {
+    db.Job.update(req.body, {
+      where: {
+        id: req.params.id
+      }
+    }).then(function(dbPost) {
+      res.json(dbPost);
     });
   });
 

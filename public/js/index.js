@@ -106,6 +106,7 @@ var publisherId = "123456789";
 var geoLocation = "seattle%2C+wa";
 var limit = "10";
 var radius = "25";
+var fullTime = true;
 
 // Grabbing results
 var indeedQueryURL =
@@ -121,6 +122,15 @@ var indeedQueryURL =
   limit +
   "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
 
+var gitHubQueryURL =
+  "https://jobs.github.com/positions.json?description=" +
+  job +
+  "&full_time=" +
+  fullTime +
+  "&location=" +
+  geoLocation +
+  "";
+
 $.ajax({
   url: indeedQueryURL,
   method: "GET"
@@ -132,5 +142,31 @@ $.ajax({
   }
 });
 
-// once all job apis are added to database, then repopulate results of all 
+$.ajax({
+  url: gitHubQueryURL,
+  method: "GET"
+}).then(function(response) {
+  // Add jobs to the database that shows up on the screen in the results?
 
+  for (var job in response) {
+    API.saveExample(job);
+  }
+});
+
+// once all job apis are added to database, then repopulate results of all 
+refreshExamples();
+
+// When a save button gets clicked then do a PUT operation to
+// make saved true. This doesn't work yet
+$(".save").on("click", function(event) {
+  var saveStatus = {
+    saved: true
+  };
+
+  $.ajax("/api/jobs/" + this.id, {
+    type: "PUT",
+    data: saveStatus
+  }).then(function(res) {
+    res.json();
+  });
+});
