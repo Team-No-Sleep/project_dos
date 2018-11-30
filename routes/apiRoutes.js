@@ -35,7 +35,7 @@ module.exports = function(app) {
   app.put("/api/jobs/:id", function(req, res) {
     db.Job.update(req.body, {
       where: {
-        id: req.body.id
+        id: req.params.id
       }
     }).then(function(dbPost) {
       res.json(dbPost);
