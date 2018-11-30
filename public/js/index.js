@@ -1,47 +1,49 @@
 // Get references to page elements
-var $exampleText = $("#example-text");
-var $exampleDescription = $("#example-description");
+var $jobText = $("#job-text");
+var $jobDescription = $("#job-description");
 var $submitBtn = $("#submit");
-var $exampleList = $("#example-list");
+var $jobList = $("#job-list");
 
 // The API object contains methods for each kind of request we'll make
 var API = {
-  saveExample: function(example) {
+  savejob: function(job) {
     return $.ajax({
       headers: {
         "Content-Type": "application/json"
       },
       type: "POST",
-      url: "api/examples",
-      data: JSON.stringify(example)
+      url: "api/jobs",
+      data: JSON.stringify(job)
     });
   },
-  getExamples: function() {
+  getjobs: function() {
     return $.ajax({
-      url: "api/examples",
+      url: "api/jobs",
       type: "GET"
     });
   },
-  deleteExample: function(id) {
+  deletejob: function(id) {
     return $.ajax({
-      url: "api/examples/" + id,
+      url: "api/jobs/" + id,
       type: "DELETE"
     });
   }
 };
 
-// refreshExamples gets new examples from the db and repopulates the list
-var refreshExamples = function() {
-  API.getExamples().then(function(data) {
-    var $examples = data.map(function(example) {
+// refreshjobs gets new jobs from the db and repopulates the list
+
+// Need to write to handlebars all the jobs to the card here
+var refreshjobs = function() {
+  API.getjobs().then(function(data) {
+    var $jobs = data.map(function(job) {
       var $a = $("<a>")
-        .text(example.text)
-        .attr("href", "/example/" + example.id);
+        .text(job.text)
+        .attr("href", "/job/" + job.id);
 
       var $li = $("<li>")
         .attr({
           class: "list-group-item",
-          "data-id": example.id
+          "data-id": job.id
         })
         .append($a);
 
@@ -54,58 +56,59 @@ var refreshExamples = function() {
       return $li;
     });
 
-    $exampleList.empty();
-    $exampleList.append($examples);
+    $jobList.empty();
+    $jobList.append($jobs);
   });
 };
 
-// handleFormSubmit is called whenever we submit a new example
-// Save the new example to the db and refresh the list
+// handleFormSubmit is called whenever we submit a new job
+// Save the new job to the db and refresh the list
 var handleFormSubmit = function(event) {
   event.preventDefault();
 
-  var example = {
-    text: $exampleText.val().trim(),
-    description: $exampleDescription.val().trim()
+  var job = {
+    text: $jobText.val().trim(),
+    description: $jobDescription.val().trim()
   };
 
-  if (!(example.text && example.description)) {
-    alert("You must enter an example text and description!");
+  if (!(job.text && job.description)) {
+    alert("You must enter an job text and description!");
     return;
   }
 
-  API.saveExample(example).then(function() {
-    refreshExamples();
+  API.savejob(job).then(function() {
+    refreshjobs();
   });
 
-  $exampleText.val("");
-  $exampleDescription.val("");
+  $jobText.val("");
+  $jobDescription.val("");
 };
 
-// handleDeleteBtnClick is called when an example's delete button is clicked
-// Remove the example from the db and refresh the list
+// handleDeleteBtnClick is called when an job's delete button is clicked
+// Remove the job from the db and refresh the list
 var handleDeleteBtnClick = function() {
   var idToDelete = $(this)
     .parent()
     .attr("data-id");
 
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
+  API.deletejob(idToDelete).then(function() {
+    refreshjobs();
   });
 };
 
 // Add event listeners to the submit and delete buttons
 $submitBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);
+$jobList.on("click", ".delete", handleDeleteBtnClick);
 
 /***************** Grabbing data from Indeed API *********************/
-
+// When the user tells the chatbot all the necessary information
 // Placeholder queries
-var job = "full+stack+developer";
+var query = "full+stack+developer";
 var publisherId = "123456789";
 var location = "seattle%2C+wa";
 var limit = "10";
 var radius = "25";
+var fullTime = true;
 
 // Grabbing results
 var indeedQueryURL =
@@ -121,6 +124,14 @@ var indeedQueryURL =
   limit +
   "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
 
+var gitHubQueryURL =
+  "https://jobs.github.com/positions.json?description=" +
+  query +
+  "&full_time=" +
+  fullTime +
+  "&location=" +
+  location +
+  "";
 $.ajax({
   url: indeedQueryURL,
   method: "GET"
@@ -132,5 +143,33 @@ $.ajax({
   }
 });
 
+$.ajax({
+  url: gitHubQueryURL,
+  method: "GET"
+}).then(function(response) {
+  // Add jobs to the database that shows up on the screen in the results?
+
+  for (var job in response) {
+    API.saveExample(job);
+  }
+});
+
 // once all job apis are added to database, then repopulate results of all 
 
+refreshExamples();
+
+// When a save button gets clicked
+// I don't think this will work
+$(".save").on("click", function(event) {
+  var saveStatus = {
+    saved: true
+  };
+
+  $.ajax("/api/jobs/" + this.id, {
+    type: "PUT",
+    data: saveStatus
+  }).then(function(res) {
+    res.json();
+    location.reload(); // ?
+  });
+});

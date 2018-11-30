@@ -6,7 +6,9 @@ module.exports = function(sequelize, DataTypes) {
     state: DataTypes.STRING,
     date: DataTypes.STRING,
     snippet: DataTypes.STRING,
-    url: DataTypes.STRING
+    url: DataTypes.STRING,
+    saved: DataTypes.BOOLEAN,
+    applied: DataTypes.BOOLEAN
   });
   return Job;
 };
