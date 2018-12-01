@@ -1,17 +1,17 @@
 // dependencies
-const API_KEY = 'trilogy';
-const request = require('request');
+const API_KEY = "trilogy";
+const request = require("request");
 
 module.exports = function(app) {
-app.get('/webhook', function (req, res) {
+  app.get("/webhook", function(req, res) {
     res.json({
-        "fulfillment": {
-            "speech": 'We are happy to see you using Chat Bot Webhook'
-            }
+      fulfillment: {
+        speech: "We are happy to see you using Chat Bot Webhook"
+      }
     });
-});
+  });
 
-app.post('/webhook', function(req,res) {
+  app.post("/webhook", function(req, res) {
     movieName = "The Matrix";
     url = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + API_KEY;
     request(url, function(error, response, body) {
@@ -21,35 +21,36 @@ app.post('/webhook', function(req,res) {
           "Title:": jsonData.Title,
           "Website:": jsonData.Website,
           "Poster:": jsonData.Poster,
-          "Plot:": jsonData.Plot,
+          "Plot:": jsonData.Plot
         };
-        var title = data["Title:"]
-        var poster = data["Poster:"]
-        var url = data["Website:"]
-        var plot = data["Plot:"]
-
-    } else {
+        var title = data["Title:"];
+        var poster = data["Poster:"];
+        var url = data["Website:"];
+        // var plot = data["Plot:"];
+      } else {
         console.log(error);
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({
-        "messages": [
+      }
+      res.setHeader("Content-Type", "application/json");
+      res.send(
+        JSON.stringify({
+          messages: [
             {
-              "buttons": [
+              buttons: [
                 {
-                  "postback": url,
-                  "text": "FOLLOW THE WHITE RABBIT"
+                  postback: url,
+                  text: "FOLLOW THE WHITE RABBIT"
                 }
               ],
-              "imageUrl": poster,
-              "title": title,
-              "type": 1
+              imageUrl: poster,
+              title: title,
+              type: 1
             }
           ]
-    })); 
-    })
-})
-}
+        })
+      );
+    });
+  });
+};
 
 // app.get('/webhook', function(req,res) {
 //     movieName = "The Matrix";
@@ -70,12 +71,9 @@ app.post('/webhook', function(req,res) {
 //     res.send(JSON.stringify({
 //         "speech" : data["Title:"],
 //         "displayText" : "The movie, " + data["Title:"]
-//     })); 
+//     }));
 //     })
 // })
-
-
-
 
 // function getMovie() {
 //     movieName = "The Matrix";
