@@ -1,24 +1,24 @@
 // The API object contains methods for each kind of request we'll make
 var API = {
-  saveExample: function(example) {
+  saveExample: function(example, apiName) {
     return $.ajax({
       headers: {
         "Content-Type": "application/json"
       },
       type: "POST",
-      url: "api/jobs",
+      url: "/api/jobs/" + apiName,
       data: JSON.stringify(example)
     });
   },
   getExamples: function() {
     return $.ajax({
-      url: "api/jobs",
+      url: "/api/jobs",
       type: "GET"
     });
   },
   deleteExample: function(id) {
     return $.ajax({
-      url: "api/jobs/" + id,
+      url: "/api/jobs/" + id,
       type: "DELETE"
     });
   }
@@ -94,7 +94,7 @@ var handleDeleteBtnClick = function() {
 /***************** Grabbing data from Indeed API *********************/
 
 //Placeholder queries
-var job = "full+stack+developer";
+var job = "software+engineer";
 var publisherId = "123456789";
 var geoLocation = "seattle%2C+wa";
 var limit = "10";
@@ -102,63 +102,66 @@ var radius = "25";
 var fullTime = true;
 
 // Grabbing results
-var indeedQueryURL =
-  "http://api.indeed.com/ads/apisearch?publisher=" +
-  publisherId +
-  "&q=" +
-  job +
-  "&l=" +
-  geoLocation +
-  "&sort=&radius=" +
-  radius +
-  "&st=&jt=&start=&limit=" +
-  limit +
-  "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
+// var indeedQueryURL =
+//   "http://api.indeed.com/ads/apisearch?publisher=" +
+//   publisherId +
+//   "&q=" +
+//   job +
+//   "&l=" +
+//   geoLocation +
+//   "&sort=&radius=" +
+//   radius +
+//   "&st=&jt=&start=&limit=" +
+//   limit +
+//   "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
 
-var gitHubQueryURL =
-  "https://jobs.github.com/positions.json?description=" +
-  job +
-  "&full_time=" +
-  fullTime +
-  "&location=" +
-  geoLocation +
-  "";
 
+
+// Github job request
+// $.ajax({
+//   url: "/api/jobs/github",
+//   method: "GET",
+//   data: gitHubQueryURL
+// }).then(function(response) {
+//   for (var i = 0; i < response.length; i++) {
+//     //console.log(response[i]);
+//     API.saveExample(response[i], "github");
+//   }
+// });
 $.ajax({
-  url: indeedQueryURL,
+  url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
   method: "GET"
 }).then(function(response) {
-  // Add jobs to the database that shows up on the screen in the results?
-
-  for (var job in response) {
-    API.saveExample(job);
+  //console.log(response);
+  for (var i = 0; i < response.length; i++) {
+    //console.log("hi");
+    console.log(response[i]);
+    API.saveExample(response[i], "github");
   }
 });
 
 $.ajax({
-  url: gitHubQueryURL,
+  url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
   method: "GET"
 }).then(function(response) {
-  // Add jobs to the database that shows up on the screen in the results?
-
-  for (var job in response) {
-    API.saveExample(job);
+  //console.log(response);
+  for (var i = 0; i < response.length; i++) {
+    // console.log("hi");
+    console.log(response[i]);
+    API.saveExample(response[i], "authentic");
   }
 });
 
-// once all job apis are added to database, then repopulate results of all 
-refreshExamples();
+// once all job apis are added to database, then repopulate results which will be sent to the carousel
+//console.log(API.getExamples());
+//API.getExamples()
 
 // When a save button gets clicked then do a PUT operation to
 // make saved true. This doesn't work yet
-$(".save").on("click", function(event) {
-  var saveStatus = {
-    saved: true
-  };
-
+$(".save").on("click", function() {
   $.ajax("/api/jobs/" + this.id, {
     type: "PUT",
-    data: saveStatus
+    data: true
   }).then(function(res) {
     res.json();
   });
