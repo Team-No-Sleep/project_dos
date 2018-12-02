@@ -101,33 +101,6 @@ var limit = "10";
 var radius = "25";
 var fullTime = true;
 
-// Grabbing results
-// var indeedQueryURL =
-//   "http://api.indeed.com/ads/apisearch?publisher=" +
-//   publisherId +
-//   "&q=" +
-//   job +
-//   "&l=" +
-//   geoLocation +
-//   "&sort=&radius=" +
-//   radius +
-//   "&st=&jt=&start=&limit=" +
-//   limit +
-//   "&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2";
-
-
-
-// Github job request
-// $.ajax({
-//   url: "/api/jobs/github",
-//   method: "GET",
-//   data: gitHubQueryURL
-// }).then(function(response) {
-//   for (var i = 0; i < response.length; i++) {
-//     //console.log(response[i]);
-//     API.saveExample(response[i], "github");
-//   }
-// });
 $.ajax({
   url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
   method: "GET"
@@ -152,8 +125,6 @@ $.ajax({
   }
 });
 
-// once all job apis are added to database, then repopulate results which will be sent to the carousel
-//console.log(API.getExamples());
 //API.getExamples()
 
 // When a save button gets clicked then do a PUT operation to
