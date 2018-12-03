@@ -16,7 +16,7 @@ module.exports = function(app) {
     var data;
     var apiName = req.params.apiName;
     var query = "";
-    console.log(keys.keys.authenticApiKey);
+    //console.log(keys.keys.authenticApiKey);
     if (apiName === "authentic") {
       var query = req.params.job;
       var location = req.params.location;

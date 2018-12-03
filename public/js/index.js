@@ -102,29 +102,29 @@ var limit = "10";
 var radius = "25";
 var fullTime = true;
 
-$.ajax({
-  url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
-  method: "GET"
-}).then(function(response) {
-  //console.log(response);
-  for (var i = 0; i < response.length; i++) {
-    //console.log("hi");
-    console.log(response[i]);
-    API.saveExample(response[i], "github");
-  }
-});
+// $.ajax({
+//   url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
+//   method: "GET"
+// }).then(function(response) {
+//   //console.log(response);
+//   for (var i = 0; i < response.length; i++) {
+//     //console.log("hi");
+//     //console.log(response[i]);
+//     API.saveExample(response[i], "github");
+//   }
+// });
 
-$.ajax({
-  url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
-  method: "GET"
-}).then(function(response) {
-  //console.log(response);
-  for (var i = 0; i < response.length; i++) {
-    // console.log("hi");
-    console.log(response[i]);
-    API.saveExample(response[i], "authentic");
-  }
-});
+// $.ajax({
+//   url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
+//   method: "GET"
+// }).then(function(response) {
+//   //console.log(response);
+//   for (var i = 0; i < response.length; i++) {
+//     // console.log("hi");
+//     //console.log(response[i]);
+//     API.saveExample(response[i], "authentic");
+//   }
+// });
 
 //API.getExamples()
 

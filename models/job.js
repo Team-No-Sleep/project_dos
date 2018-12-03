@@ -10,5 +10,13 @@ module.exports = function(sequelize, DataTypes) {
     saved: DataTypes.BOOLEAN,
     applied: DataTypes.BOOLEAN
   });
+
+  // Job.associate = function(models) {
+  //   Job.belongsTo(models.User, {
+  //     foreignKey: {
+  //       allowNull: false
+  //     }
+  //   });
+  // };
   return Job;
 };

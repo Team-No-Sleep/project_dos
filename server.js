@@ -30,7 +30,7 @@ app.use(passport.session());
 //   have a database of user records, the complete Linkedin profile is
 //   serialized and deserialized.
 passport.serializeUser(function(user, done) {
-  console.log(user);
+ // console.log(user);
   done(null, user);
 });
 
@@ -54,6 +54,7 @@ passport.use(
         // represent the logged-in user. In a typical application, you would want
         // to associate the LinkedIn account with a user record in your database,
         // and return that user instead.
+        console.log(profile.id);
         return done(null, profile);
       });
     }
