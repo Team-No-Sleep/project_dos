@@ -124,6 +124,8 @@ module.exports = function(app) {
   });
 
   //return the user the user to the login page
+  //move this auth route to its own javascript file authController.js and rename
+  //routes to controllers
   app.get(
     "/auth/linkedin/callback",
     passport.authenticate("linkedin", {
