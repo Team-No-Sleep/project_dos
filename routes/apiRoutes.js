@@ -1,27 +1,108 @@
+var request = require("request");
 var db = require("../models");
 var passport = require("passport");
+var keys = require("../keys");
 
 module.exports = function(app) {
   // Get all jobs
-  app.get("/api/jobs", function(req, res) {
-    db.Job.findAll({}).then(function(dbJobs) {
-      res.json(dbJobs);
+  app.get("/api/jobs/:userTableId", function(req, res) {
+    db.Job.findAll({
+      where: {
+        UserId: req.params.userTableId
+      }
+    }).then(function(dbUser) {
+      res.json(dbUser);
     });
   });
 
-  app.post("/api/jobs", function(req, res) {
-    db.Job.create({
-      jobtitle: req.body.jobtitle,
-      company: req.body.company,
-      city: req.body.city,
-      state: req.body.state,
-      date: req.body.date,
-      snippet: req.body.snippet,
-      url: req.body.url,
-      saved: false,
-      applied: false
-    }).then(function(dbJob) {
-      res.json(dbJob);
+  app.get("/api/jobs/:apiName/:job/:location/:fullTime", function(req, res) {
+    //console.log(req.body.data);
+    var data;
+    var apiName = req.params.apiName;
+    var query = "";
+    //console.log(keys.keys.authenticApiKey);
+    if (apiName === "authentic") {
+      var query = req.params.job;
+      var location = req.params.location;
+      var queryURL =
+        "https://authenticjobs.com/api/?api_key=" +
+        keys.keys.authenticApiKey +
+        "&format=json" +
+        "&method=aj.jobs.search" +
+        "&keywords=" +
+        query +
+        "&location=" +
+        location +
+        "";
+    } else if (apiName === "github") {
+      var query = req.params.job;
+      var location = req.params.location;
+      var fullTime = req.params.fullTime;
+      var queryURL =
+        "https://jobs.github.com/positions.json?description=" +
+        query +
+        "&full_time=" +
+        fullTime +
+        "&location=" +
+        location +
+        "";
+    }
+    request(queryURL, { json: true }, (err, result, body) => {
+      if (err) {
+        return console.log(err);
+      }
+      //console.log(body)
+      //console.log(body.listings.listing[0].title);
+      if (apiName === "authentic") {
+        data = body.listings.listing;
+      } else if (apiName === "github") {
+        data = body;
+      }
+      res.send(data);
+    });
+  });
+
+  // github jobs
+  app.post("/api/jobs/:apiName/:userTableId", function(req, res) {
+    if (req.params.apiName === "github") {
+      db.Job.create({
+        jobtitle: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        date: req.body.created_at,
+        snippet: req.body.description,
+        url: req.body.how_to_apply,
+        type: req.body.type,
+        saved: false,
+        applied: false,
+        UserId: req.params.userTableId
+      }).then(function(dbJob) {
+        res.json(dbJob);
+      });
+    } else if (req.params.apiName === "authentic") {
+      db.Job.create({
+        jobtitle: req.body.title,
+        company: req.body.company.name,
+        location: req.body.company.location.name,
+        date: req.body.post_date,
+        snippet: req.body.description,
+        url: req.body.url,
+        type: req.body.type.name,
+        saved: false,
+        applied: false,
+        UserId: req.params.userTableId
+      }).then(function(dbJob) {
+        res.json(dbJob);
+      });
+    }
+  });
+
+  // Delete unsaved jobs
+  app.delete("/api/jobs/:userTableId", function(req, res) {
+    db.Job.destroy({
+      where: {
+        saved: 0
+      }
     });
   });
 
@@ -32,14 +113,13 @@ module.exports = function(app) {
     });
   });
 
+  // Update saved status
   app.put("/api/jobs/:id", function(req, res) {
-    db.Job.update(req.body, {
-      where: {
-        id: req.params.id
+    db.Job.update({ saved: req.body.data }, { where: req.params.id }).then(
+      function(dbPost) {
+        res.json(dbPost);
       }
-    }).then(function(dbPost) {
-      res.json(dbPost);
-    });
+    );
   });
 
   //return the user the user to the login page
@@ -52,4 +132,24 @@ module.exports = function(app) {
       failureRedirect: "/"
     })
   );
+  //**********************************/
+
+  app.get("/api/user/:userId", function(req, res) {
+    //console.log(req.params.userId);
+    db.User.findAll({
+      where: {
+        linkedInId: req.params.userId
+      },
+      attributes: ["id"]
+    }).then(function(dbUser) {
+      res.json(dbUser);
+    });
+
+    // console.log(req.body.userId);
+    // res.render("chat", {
+    //   userId: {
+    //     id: req.body.userId
+    //   }
+    // });
+  });
 };
