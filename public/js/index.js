@@ -1,5 +1,7 @@
 $(document).ready(function() {
   var userTableId;
+
+  
   function getId() {
     $.ajax({
       type: "GET",

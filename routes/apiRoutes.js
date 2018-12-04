@@ -101,8 +101,7 @@ module.exports = function(app) {
   app.delete("/api/jobs/:userTableId", function(req, res) {
     db.Job.destroy({
       where: {
-        saved: 0,
-        //UserId: req.params.userTableId
+        saved: 0
       }
     });
   });
