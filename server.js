@@ -3,6 +3,8 @@ var express = require("express");
 var exphbs = require("express-handlebars");
 var passport = require("passport");
 var session = require("express-session");
+var request = require("request");
+var userId;
 
 var db = require("./models");
 var keys = require("./keys");
@@ -30,7 +32,7 @@ app.use(passport.session());
 //   have a database of user records, the complete Linkedin profile is
 //   serialized and deserialized.
 passport.serializeUser(function(user, done) {
- // console.log(user);
+  // console.log(user);
   done(null, user);
 });
 
@@ -50,11 +52,35 @@ passport.use(
     function(accessToken, refreshToken, profile, done) {
       // asynchronous verification, for effect...
       process.nextTick(function() {
-        // To keep the example simple, the user's LinkedIn profile is returned to
-        // represent the logged-in user. In a typical application, you would want
-        // to associate the LinkedIn account with a user record in your database,
-        // and return that user instead.
-        console.log(profile.id);
+        // This checks if the username is already in the database, if not, adds the
+        // user to the database
+        // console.log(profile.id);
+        // console.log(profile.name);
+        db.User.findOrCreate({
+          where: { linkedInId: profile.id },
+          defaults: {
+            linkedInId: profile.id,
+            name: profile.name.givenName + " " + profile.name.familyName
+          }
+        }).spread((user, created) => {
+          // userId = user.id;
+          // request.post("http://localhost:3000/api/user", {
+          //   form: {
+          //     userId: user.id
+          //   },
+          //   headers: {
+          //     "Content-Type": "application/x-www-form-urlencoded"
+          //   }
+          // });
+          console.log(
+            user.get({
+              plain: true
+            })
+          );
+
+          console.log(user.id)
+        });
+
         return done(null, profile);
       });
     }
@@ -99,10 +125,11 @@ db.sequelize.sync(syncOptions).then(function() {
 //   the request is authenticated (typically via a persistent login session),
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
-function ensureAuthenticated (req, res, next) {
+function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");
 }
+
 module.exports = app;

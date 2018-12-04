@@ -1,13 +1,17 @@
-var request = require("request")
+var request = require("request");
 var db = require("../models");
 var passport = require("passport");
 var keys = require("../keys");
 
 module.exports = function(app) {
   // Get all jobs
-  app.get("/api/jobs", function(req, res) {
-    db.Job.findAll({}).then(function(dbJobs) {
-      res.json(dbJobs);
+  app.get("/api/jobs/:userTableId", function(req, res) {
+    db.Job.findAll({
+      where: {
+        UserId: req.params.userTableId
+      }
+    }).then(function(dbUser) {
+      res.json(dbUser);
     });
   });
 
@@ -30,7 +34,6 @@ module.exports = function(app) {
         "&location=" +
         location +
         "";
-      
     } else if (apiName === "github") {
       var query = req.params.job;
       var location = req.params.location;
@@ -43,25 +46,24 @@ module.exports = function(app) {
         "&location=" +
         location +
         "";
-        
     }
     request(queryURL, { json: true }, (err, result, body) => {
-    if (err) { return console.log(err); }
-    //console.log(body)
+      if (err) {
+        return console.log(err);
+      }
+      //console.log(body)
       //console.log(body.listings.listing[0].title);
-      
       if (apiName === "authentic") {
         data = body.listings.listing;
       } else if (apiName === "github") {
         data = body;
       }
       res.send(data);
-
-});
+    });
   });
 
   // github jobs
-  app.post("/api/jobs/:apiName", function(req, res) {
+  app.post("/api/jobs/:apiName/:userTableId", function(req, res) {
     if (req.params.apiName === "github") {
       db.Job.create({
         jobtitle: req.body.title,
@@ -72,7 +74,8 @@ module.exports = function(app) {
         url: req.body.how_to_apply,
         type: req.body.type,
         saved: false,
-        applied: false
+        applied: false,
+        UserId: req.params.userTableId
       }).then(function(dbJob) {
         res.json(dbJob);
       });
@@ -86,11 +89,22 @@ module.exports = function(app) {
         url: req.body.url,
         type: req.body.type.name,
         saved: false,
-        applied: false
+        applied: false,
+        UserId: req.params.userTableId
       }).then(function(dbJob) {
         res.json(dbJob);
       });
     }
+  });
+
+  // Delete unsaved jobs
+  app.delete("/api/jobs/:userTableId", function(req, res) {
+    db.Job.destroy({
+      where: {
+        saved: 0,
+        //UserId: req.params.userTableId
+      }
+    });
   });
 
   // Delete a job by id
@@ -117,4 +131,24 @@ module.exports = function(app) {
       failureRedirect: "/"
     })
   );
+  //**********************************/
+
+  app.get("/api/user/:userId", function(req, res) {
+    //console.log(req.params.userId);
+    db.User.findAll({
+      where: {
+        linkedInId: req.params.userId
+      },
+      attributes: ["id"]
+    }).then(function(dbUser) {
+      res.json(dbUser);
+    });
+
+    // console.log(req.body.userId);
+    // res.render("chat", {
+    //   userId: {
+    //     id: req.body.userId
+    //   }
+    // });
+  });
 };

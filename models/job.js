@@ -11,12 +11,12 @@ module.exports = function(sequelize, DataTypes) {
     applied: DataTypes.BOOLEAN
   });
 
-  // Job.associate = function(models) {
-  //   Job.belongsTo(models.User, {
-  //     foreignKey: {
-  //       allowNull: false
-  //     }
-  //   });
-  // };
+  Job.associate = function(models) {
+    Job.belongsTo(models.User, {
+      foreignKey: {
+        allowNull: false
+      }
+    });
+  };
   return Job;
 };
