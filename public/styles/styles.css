@@ -1,12 +1,26 @@
+body, .bg-black {
+  background-color: black;
+}
+
 .list-group-item {
   line-height: 2.5;
 }
-.btn-linkedIn{
+
+.btn-linkedIn {
   background: url("../img/Sign-In-Large---Default.png") no-repeat;
-  cursor:pointer;
-  border:none;
-  width:430px;
-  height:80px;
+  cursor: pointer;
+  border: none;
+  width: 430px;
+  height: 80px;
+  border: 1px solid black;
+}
+
+.login-centering {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 /* #userId {
