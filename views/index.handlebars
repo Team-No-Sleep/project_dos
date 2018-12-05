@@ -5,8 +5,12 @@
       <img class="img-fluid mx-auto" src="./img/watson_careers_logo442X188.png" />
     </div>
     <div class="row">
+      {{#if userId}}
+        <p>{{userId.id}}</p>
+      {{/if}}
       {{#if user}}
-        <p>Hello {{user.name.givenName}}</p>
+        <p id="name">Hello {{user.name.givenName}}</p>
+        
         <button id="logOut" onclick="logOut()" class="btn btn-primary btn-sm">Sign Out</button>
       {{else}}
         <button id="logIn" onclick="logIn()" class="btn btn-linkedIn btn-sm mx-auto"></button>
