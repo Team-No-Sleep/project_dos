@@ -98,10 +98,19 @@ module.exports = function(app) {
   });
 
   // Delete unsaved jobs
-  app.delete("/api/jobs/:userTableId", function(req, res) {
+  app.delete("/api/jobs", function(req, res) {
     db.Job.destroy({
       where: {
         saved: 0
+      }
+    });
+  });
+  // Get saved jobs for given user
+  app.get("/api/jobs/:userTableId", function(req, res) {
+    db.Job.findAll({
+      where: {
+        saved: 1,
+        UserId: userTableId
       }
     });
   });
@@ -121,6 +130,8 @@ module.exports = function(app) {
       }
     );
   });
+
+  
 
   //return the user the user to the login page
   //move this auth route to its own javascript file authController.js and rename
@@ -144,6 +155,8 @@ module.exports = function(app) {
     }).then(function(dbUser) {
       res.json(dbUser);
     });
+
+    
 
     // console.log(req.body.userId);
     // res.render("chat", {

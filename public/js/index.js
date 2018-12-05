@@ -1,7 +1,5 @@
 $(document).ready(function() {
   var userTableId;
-
-  
   function getId() {
     $.ajax({
       type: "GET",
@@ -9,7 +7,7 @@ $(document).ready(function() {
     }).then(function(response) {
       console.log(response);
       userTableId = response[0].id;
-      API.deleteUnsaved();
+      //API.deleteUnsaved();
     });
   }
 
@@ -38,7 +36,7 @@ $(document).ready(function() {
     deleteUnsaved: function() {
       console.log(userTableId);
       return $.ajax({
-        url: "/api/jobs/" + userTableId,
+        url: "/api/jobs",
         type: "DELETE"
       });
     },
@@ -47,6 +45,13 @@ $(document).ready(function() {
       return $.ajax({
         url: "/api/jobs/" + id,
         type: "DELETE"
+      });
+    },
+
+    getSavedJobs: function() {
+      return $.ajax({
+        url: "/api/jobs/" + userTableId,
+        type: "GET"
       });
     }
   };
@@ -125,6 +130,7 @@ $(document).ready(function() {
     for (var i = 0; i < response.length; i++) {
       API.saveExample(response[i], "authentic");
       refreshExamples();
+      API.getSavedJobs();
     }
   });
 
