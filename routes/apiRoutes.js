@@ -112,22 +112,22 @@ module.exports = function(app) {
       });
     } else if (req.params.apiName === "gov") {
       var locations = "";
-      for (var i = 0; i < req.body["locations"].length; i++) {
-        if (req.body["locations"][i].slice(-2) === "WA") {
-          locations += req.body["locations"][i];
+      for (var i = 0; i < req.body.locations.length; i++) {
+        if (req.body.locations[i].slice(-2) === "WA") {
+          locations += req.body.locations[i];
         }
       }
       db.Job.create({
-        jobtitle: req.body["position_title"],
-        company: req.body["organization_name"],
+        jobtitle: req.body.position_title,
+        company: req.body.organization_name,
         location: locations,
-        date: req.body["start_date"],
+        date: req.body.start_date,
         snippet: "",
-        url: req.body["url"],
+        url: req.body.url,
         type: "Full-Time",
         saved: false,
         applied: false,
-        UserId: req.params["userTableId"]
+        UserId: req.params.userTableId
       }).then(function(dbJob) {
         res.json(dbJob);
       });
