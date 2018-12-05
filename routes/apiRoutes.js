@@ -46,6 +46,20 @@ module.exports = function(app) {
         "&location=" +
         location +
         "";
+    } else if (apiName === "gov") {
+      var fullTime;
+      if (req.params.fullTime) {
+        fullTime = "fulltime";
+      } else {
+        fullTime = "parttime";
+      }
+      var query = fullTime + "+" + req.params.job + "+" + "jobs+in+";
+      var location = req.params.location;
+      var queryURL =
+        "https://jobs.search.gov/jobs/search.json?query=" +
+        query +
+        location +
+        "";
     }
     request(queryURL, { json: true }, (err, result, body) => {
       if (err) {
@@ -56,6 +70,8 @@ module.exports = function(app) {
       if (apiName === "authentic") {
         data = body.listings.listing;
       } else if (apiName === "github") {
+        data = body;
+      } else if (apiName === "gov") {
         data = body;
       }
       res.send(data);
@@ -88,6 +104,27 @@ module.exports = function(app) {
         snippet: req.body.description,
         url: req.body.url,
         type: req.body.type.name,
+        saved: false,
+        applied: false,
+        UserId: req.params.userTableId
+      }).then(function(dbJob) {
+        res.json(dbJob);
+      });
+    } else if (req.params.apiName === "gov") {
+      var locations = "";
+      for (var i = 0; i < req.body.locations.length; i++) {
+        if (req.body.locations[i].slice(-2) === "WA") {
+          locations += req.body.locations[i];
+        }
+      }
+      db.Job.create({
+        jobtitle: req.body.position_title,
+        company: req.body.organization_name,
+        location: locations,
+        date: req.body.start_date,
+        snippet: "",
+        url: req.body.url,
+        type: "Full-Time",
         saved: false,
         applied: false,
         UserId: req.params.userTableId

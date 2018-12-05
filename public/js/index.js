@@ -102,11 +102,22 @@ $(document).ready(function() {
   var job = "software+engineer";
   var publisherId = "123456789";
   var geoLocation = "seattle%2C+wa";
+  var state = geoLocation.slice(-2);
   var limit = "10";
   var radius = "25";
   var fullTime = true;
 
   getId();
+
+  $.ajax({
+    url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
+    method: "GET"
+  }).then(function(response) {
+    for (var i = 0; i < response.length; i++) {
+      //console.log(response[i]);
+      API.saveExample(response[i], "gov");
+    }
+  });
 
   $.ajax({
     url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
