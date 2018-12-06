@@ -111,7 +111,6 @@ $(document).ready(function() {
     });
   };
 
-
   // Add event listeners to the submit and delete buttons
 
   /***************** Grabbing data from Indeed API *********************/
