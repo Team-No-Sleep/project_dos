@@ -14,6 +14,7 @@
         <div class="row w-100 mx-auto">
           <div class="col">
             <p class="text-white mb-0 mt-3">Hello {{user.name.givenName}}</p>
+            <p id= "userId">{{user.id}}</p>
           </div>
           <div class="col text-right pr-0">
             <button id="logOut" onclick="logOut()" class="btn btn-primary btn-sm">Sign Out</button>
@@ -32,19 +33,6 @@
       <div class="botui-app-container pt-5 mt-5" id="hello-world">
         <bot-ui></bot-ui>
       </div>
-
-      <div class="col">
-        {{#if userId}}
-        <p>{{userId.id}}</p>
-        {{/if}}
-
-        {{#if user}}
-        <p id= "userId">{{user.id}}</p>
-        <p>Hello {{user.name.givenName}}</p>
-        <button id="logOut" onclick="logOut()" class="btn btn-primary btn-sm">Sign Out</button>
-        {{else}}
-        <button id="logIn" onclick="logIn()" class="btn btn-linkedIn btn-sm"></button>
-        {{/if}}</div>
 
     </div>
     {{!-- <iframe width="350" height="430" src="https://console.dialogflow.com/api-client/demo/embedded/915cb787-abe5-4178-a254-debe8d18c0c8">

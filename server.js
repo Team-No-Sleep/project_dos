@@ -137,7 +137,7 @@ function ensureAuthenticated(req, res, next) {
   }
   res.redirect("/login");
 }
-var dialogFlow = new chatbot.DialogFlow();
+//var dialogFlow = new chatbot.DialogFlow();
 //connecting socket.io and DialogFlow
 var fromClient = function() {
   socketio.on("connection", function(socket) {
