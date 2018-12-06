@@ -1,12 +1,13 @@
 $(document).ready(function() {
   var userTableId;
 
-  
   function getId() {
+    console.log("getid start");
     $.ajax({
       type: "GET",
       url: "/api/user/" + $("#userId").text()
     }).then(function(response) {
+      console.log("getid done");
       console.log(response);
       userTableId = response[0].id;
       API.deleteUnsaved();
@@ -16,7 +17,7 @@ $(document).ready(function() {
   var API = {
     saveExample: function(example, apiName) {
       console.log(userTableId);
-
+      console.log("save example start");
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
@@ -24,6 +25,8 @@ $(document).ready(function() {
         type: "POST",
         url: "/api/jobs/" + apiName + "/" + userTableId,
         data: JSON.stringify(example)
+      }).then(function(response) {
+        console.log("save example done");
       });
     },
     getExamples: function() {
@@ -36,10 +39,13 @@ $(document).ready(function() {
     // When the user loads the page, recommended jobs that aren't saved
     // are deleted from the database
     deleteUnsaved: function() {
+      console.log("delete unsave");
       console.log(userTableId);
       return $.ajax({
         url: "/api/jobs/" + userTableId,
         type: "DELETE"
+      }).then(function(response) {
+        console.log("delete unsave done");
       });
     },
 
@@ -53,8 +59,10 @@ $(document).ready(function() {
 
   // refreshExamples gets new examples from the db and repopulates the list
   var refreshExamples = function() {
+    console.log("refresh examples start");
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
+      console.log("refresh examples end");
       console.log(data);
     });
   };
@@ -106,39 +114,43 @@ $(document).ready(function() {
   var limit = "10";
   var radius = "25";
   var fullTime = true;
+  if ($("#userId").text() !== "") {
+    getId();
 
-  getId();
-
-  $.ajax({
-    url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
-    method: "GET"
-  }).then(function(response) {
-    for (var i = 0; i < response.length; i++) {
-      //console.log(response[i]);
-      API.saveExample(response[i], "gov");
-    }
-  });
-
-  $.ajax({
-    url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
-    method: "GET"
-  }).then(function(response) {
-    for (var i = 0; i < response.length; i++) {
-      API.saveExample(response[i], "github");
-    }
-  });
-
-  $.ajax({
-    url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
-    method: "GET"
-  }).then(function(response) {
-    //console.log(response);
-    for (var i = 0; i < response.length; i++) {
-      API.saveExample(response[i], "authentic");
-      refreshExamples();
-    }
-  });
-
+    console.log("requesting gov jobs");
+    $.ajax({
+      url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
+      method: "GET"
+    }).then(function(response) {
+      for (var i = 0; i < response.length; i++) {
+        //console.log(response[i]);
+        console.log("gov " + i + " of " + response.length);
+        API.saveExample(response[i], "gov");
+      }
+    });
+    console.log("requesting github jobs");
+    $.ajax({
+      url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
+      method: "GET"
+    }).then(function(response) {
+      for (var i = 0; i < response.length; i++) {
+        console.log("github " + i + " of " + response.length);
+        API.saveExample(response[i], "github");
+      }
+    });
+    console.log("requesting authentic jobs");
+    $.ajax({
+      url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
+      method: "GET"
+    }).then(function(response) {
+      //console.log(response);
+      for (var i = 0; i < response.length; i++) {
+        console.log("authentic " + i + " of " + response.length);
+        API.saveExample(response[i], "authentic");
+        refreshExamples();
+      }
+    });
+  }
   //API.getExamples();
 
   // When a save button gets clicked then do a PUT operation to

@@ -1,7 +1,7 @@
 var db = require("../models");
 var passport = require("passport");
 
-module.exports = function(app) {
+module.exports = function(app, ensureAuthenticated) {
   // Load index page
   app.get("/", function(req, res) {
     //console.log(db);
@@ -15,7 +15,7 @@ module.exports = function(app) {
   });
 
   //load chat bot
-  app.get("/chat", function(req, res) {
+  app.get("/chat", ensureAuthenticated, function(req, res) {
     res.render("chat", {
       user: req.user
     });

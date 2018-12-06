@@ -13,8 +13,10 @@
         {{#if user}}
         <div class="row w-100 mx-auto">
           <div class="col">
-            <p class="text-white mb-0 mt-3">Hello {{user.name.givenName}}</p>
-            <p id= "userId">{{user.id}}</p>
+            <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Jobs <span class="sr-only">(current)</span></a>
+      </li></ul>
           </div>
           <div class="col text-right pr-0">
             <button id="logOut" onclick="logOut()" class="btn btn-primary btn-sm">Sign Out</button>
@@ -30,7 +32,7 @@
   </nav>
   <div class="container">
     <div class="row mx-auto">
-      <div class="botui-app-container pt-5 mt-5" id="hello-world">
+      <div class="botui-app-container pt-5 mt-5 h-100" id="chat-bot">
         <bot-ui></bot-ui>
       </div>
 
@@ -39,3 +41,7 @@
     </iframe> --}}
   </div>
 </div>
+{{!-- javascript required for botui to work with dialogflow chat --}}
+<script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+<script src="https://unpkg.com/botui/build/botui.js"></script>
+<script src="/js/chat_data.js"></script>
