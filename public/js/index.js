@@ -1,10 +1,12 @@
 $(document).ready(function() {
   var userTableId;
   function getId() {
+    console.log("getid start");
     $.ajax({
       type: "GET",
       url: "/api/user/" + $("#userId").text()
     }).then(function(response) {
+      console.log("getid done");
       console.log(response);
       userTableId = response[0].id;
     });
@@ -13,7 +15,7 @@ $(document).ready(function() {
   var API = {
     saveExample: function(example, apiName) {
       console.log(userTableId);
-
+      console.log("save example start");
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
@@ -21,6 +23,8 @@ $(document).ready(function() {
         type: "POST",
         url: "/api/jobs/" + apiName + "/" + userTableId,
         data: JSON.stringify(example)
+      }).then(function(response) {
+        console.log("save example done");
       });
     },
     getExamples: function() {
@@ -38,6 +42,8 @@ $(document).ready(function() {
       return $.ajax({
         url: "/api/jobs",
         type: "DELETE"
+      }).then(function(response) {
+        console.log("delete unsave done");
       });
     },
 
@@ -58,8 +64,10 @@ $(document).ready(function() {
 
   // refreshExamples gets new examples from the db and repopulates the list
   var refreshExamples = function() {
+    console.log("refresh examples start");
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
+      console.log("refresh examples end");
       console.log(data);
     });
   };
@@ -123,7 +131,9 @@ $(document).ready(function() {
   var limit = "10";
   var radius = "25";
   var fullTime = true;
-
+  if ($("#userId").text() !== "") {
+    getId();
+  }
   if ($("#userId").text() !== "") {
     deleteUnsaved();
     getId();

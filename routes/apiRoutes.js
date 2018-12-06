@@ -93,6 +93,7 @@ module.exports = function(app) {
 
   // github jobs
   app.post("/api/jobs/:apiName/:userTableId", function(req, res) {
+    console.log("start save jobs");
     if (req.params.apiName === "github") {
       db.Job.create({
         jobtitle: req.body.title,
@@ -106,6 +107,7 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     } else if (req.params.apiName === "authentic") {
@@ -121,6 +123,7 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     } else if (req.params.apiName === "gov") {
@@ -142,6 +145,7 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     }
