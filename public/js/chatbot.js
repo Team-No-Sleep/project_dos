@@ -62,4 +62,4 @@ agent = new DialogFlow();
 //it will return the var fulfillmentText and var queryText for use in the chatbot ui
 agent.sendTextMessageToDialogFlow(userQuery, sessionId);
 
-module.exports = dialogflow;
+module.exports = DialogFlow;

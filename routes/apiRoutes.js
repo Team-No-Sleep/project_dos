@@ -4,14 +4,27 @@ var passport = require("passport");
 var keys = require("../keys");
 
 module.exports = function(app) {
-  // Get all jobs
+  // Get all unsaved jobs not saved by the user
   app.get("/api/jobs/:userTableId", function(req, res) {
     db.Job.findAll({
       where: {
+        saved: 0,
         UserId: req.params.userTableId
       }
-    }).then(function(dbUser) {
-      res.json(dbUser);
+    }).then(function(dbJobs) {
+      res.json(dbJobs);
+    });
+  });
+
+  // Get saved jobs for given user
+  app.get("/api/jobs/saved/:userTableId", function(req, res) {
+    db.Job.findAll({
+      where: {
+        saved: 1,
+        UserId: req.params.userTableId
+      }
+    }).then(function(dbJobs) {
+      res.json(dbJobs);
     });
   });
 
@@ -80,6 +93,7 @@ module.exports = function(app) {
 
   // github jobs
   app.post("/api/jobs/:apiName/:userTableId", function(req, res) {
+    console.log("start save jobs");
     if (req.params.apiName === "github") {
       db.Job.create({
         jobtitle: req.body.title,
@@ -93,6 +107,7 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     } else if (req.params.apiName === "authentic") {
@@ -108,6 +123,7 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     } else if (req.params.apiName === "gov") {
@@ -129,17 +145,20 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
+        console.log("end save jobs");
         res.json(dbJob);
       });
     }
   });
 
   // Delete unsaved jobs
-  app.delete("/api/jobs/:userTableId", function(req, res) {
+  app.delete("/api/jobs", function(req, res) {
     db.Job.destroy({
       where: {
         saved: 0
       }
+    }).then(function(dbJob) {
+      res.json(dbJob);
     });
   });
 
@@ -181,7 +200,6 @@ module.exports = function(app) {
     }).then(function(dbUser) {
       res.json(dbUser);
     });
-
     // console.log(req.body.userId);
     // res.render("chat", {
     //   userId: {
