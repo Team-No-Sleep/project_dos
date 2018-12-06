@@ -3,6 +3,9 @@ var express = require("express");
 var exphbs = require("express-handlebars");
 var passport = require("passport");
 var session = require("express-session");
+var server = require("http").createServer(express);
+var socketio = require("socket.io")(server);
+var chatbot = require("./public/js/chatbot");
 var request = require("request");
 var userId;
 
@@ -78,7 +81,7 @@ passport.use(
             })
           );
 
-          console.log(user.id)
+          console.log(user.id);
         });
 
         return done(null, profile);
@@ -93,14 +96,28 @@ app.engine(
   exphbs({
     defaultLayout: "main",
     //added the helpers in case it might be needed later
-    helpers: {}
+    helpers: {
+      json: object => JSON.stringify(object || null)
+    }
   })
 );
 app.set("view engine", "handlebars");
 
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+}
+
 // Routes
 require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+require("./routes/htmlRoutes")(app, ensureAuthenticated);
 
 var syncOptions = { force: false };
 
@@ -112,6 +129,7 @@ if (process.env.NODE_ENV === "test") {
 
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function() {
+  //http port
   app.listen(PORT, function() {
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
@@ -119,17 +137,20 @@ db.sequelize.sync(syncOptions).then(function() {
       PORT
     );
   });
+  //server port
+  server.listen(8010);
 });
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/login");
-}
 
-module.exports = app;
+//var dialogFlow = new chatbot.DialogFlow();
+//connecting socket.io and DialogFlow
+var fromClient = function() {
+  socketio.on("connection", function(socket) {
+    socket.on("fromClient", function(data) {
+      dialogFlow.sendTextMessageToDialogFlow(data.client, sessionId);
+      // api.getRes(data.client).then(function(res) {
+      //   socket.emit("fromServer", { server: res });
+      // });
+    });
+  });
+};
+module.exports = { app, fromClient };
