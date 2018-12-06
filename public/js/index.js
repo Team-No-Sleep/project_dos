@@ -7,7 +7,6 @@ $(document).ready(function() {
     }).then(function(response) {
       console.log(response);
       userTableId = response[0].id;
-      //API.deleteUnsaved();
     });
   }
 
@@ -34,6 +33,7 @@ $(document).ready(function() {
     // When the user loads the page, recommended jobs that aren't saved
     // are deleted from the database
     deleteUnsaved: function() {
+      console.log("DELETING");
       console.log(userTableId);
       return $.ajax({
         url: "/api/jobs",
@@ -50,7 +50,7 @@ $(document).ready(function() {
 
     getSavedJobs: function() {
       return $.ajax({
-        url: "/api/jobs/" + userTableId,
+        url: "/api/jobs/saved/" + userTableId,
         type: "GET"
       });
     }
@@ -60,6 +60,18 @@ $(document).ready(function() {
   var refreshExamples = function() {
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
+      console.log(data);
+    });
+  };
+
+  var getSavedJobs = function() {
+    API.getSavedJobs().then(function(data) {
+      console.log(data);
+    });
+  };
+
+  var deleteUnsaved = function() {
+    API.deleteUnsaved().then(function(data) {
       console.log(data);
     });
   };
@@ -99,6 +111,7 @@ $(document).ready(function() {
     });
   };
 
+
   // Add event listeners to the submit and delete buttons
 
   /***************** Grabbing data from Indeed API *********************/
@@ -112,49 +125,55 @@ $(document).ready(function() {
   var radius = "25";
   var fullTime = true;
 
-  getId();
+  if ($("#userId").text() !== "") {
+    deleteUnsaved();
+    getId();
 
-  $.ajax({
-    url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
-    method: "GET"
-  }).then(function(response) {
-    for (var i = 0; i < response.length; i++) {
-      //console.log(response[i]);
-      API.saveExample(response[i], "gov");
-    }
-  });
-
-  $.ajax({
-    url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
-    method: "GET"
-  }).then(function(response) {
-    for (var i = 0; i < response.length; i++) {
-      API.saveExample(response[i], "github");
-    }
-  });
-
-  $.ajax({
-    url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
-    method: "GET"
-  }).then(function(response) {
-    //console.log(response);
-    for (var i = 0; i < response.length; i++) {
-      API.saveExample(response[i], "authentic");
-      refreshExamples();
-      API.getSavedJobs();
-    }
-  });
-
-  //API.getExamples();
-
-  // When a save button gets clicked then do a PUT operation to
-  // make saved true. This doesn't work yet
-  $(".save").on("click", function() {
-    $.ajax("/api/jobs/" + this.id, {
-      type: "PUT",
-      data: true
-    }).then(function(res) {
-      res.json();
+    $.ajax({
+      url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
+      method: "GET"
+    }).then(function(response) {
+      for (var i = 0; i < response.length; i++) {
+        //console.log(response[i]);
+        API.saveExample(response[i], "gov");
+      }
     });
-  });
+
+    $.ajax({
+      url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
+      method: "GET"
+    }).then(function(response) {
+      for (var i = 0; i < response.length; i++) {
+        API.saveExample(response[i], "github");
+      }
+    });
+
+    $.ajax({
+      url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
+      method: "GET"
+    }).then(function(response) {
+      //console.log(response);
+      for (var i = 0; i < response.length; i++) {
+        // Will add new jobs to the db without saving them
+        API.saveExample(response[i], "authentic");
+      }
+      // Will console.log all newly added jobs that aren't saved
+      // expect 6
+      refreshExamples();
+      // Will console.log all saved jobs
+      // expect 3
+      getSavedJobs();
+    });
+
+    // When a save button gets clicked then do a PUT operation to
+    // make saved true. This doesn't work yet
+    $(".save").on("click", function() {
+      $.ajax("/api/jobs/" + this.id, {
+        type: "PUT",
+        data: true
+      }).then(function(res) {
+        res.json();
+      });
+    });
+  }
 });
