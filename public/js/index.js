@@ -1,6 +1,5 @@
 $(document).ready(function() {
   var userTableId;
-
   function getId() {
     console.log("getid start");
     $.ajax({
@@ -10,7 +9,6 @@ $(document).ready(function() {
       console.log("getid done");
       console.log(response);
       userTableId = response[0].id;
-      API.deleteUnsaved();
     });
   }
 
@@ -39,10 +37,10 @@ $(document).ready(function() {
     // When the user loads the page, recommended jobs that aren't saved
     // are deleted from the database
     deleteUnsaved: function() {
-      console.log("delete unsave");
+      console.log("DELETING");
       console.log(userTableId);
       return $.ajax({
-        url: "/api/jobs/" + userTableId,
+        url: "/api/jobs",
         type: "DELETE"
       }).then(function(response) {
         console.log("delete unsave done");
@@ -54,6 +52,13 @@ $(document).ready(function() {
         url: "/api/jobs/" + id,
         type: "DELETE"
       });
+    },
+
+    getSavedJobs: function() {
+      return $.ajax({
+        url: "/api/jobs/saved/" + userTableId,
+        type: "GET"
+      });
     }
   };
 
@@ -63,6 +68,18 @@ $(document).ready(function() {
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
+      console.log(data);
+    });
+  };
+
+  var getSavedJobs = function() {
+    API.getSavedJobs().then(function(data) {
+      console.log(data);
+    });
+  };
+
+  var deleteUnsaved = function() {
+    API.deleteUnsaved().then(function(data) {
       console.log(data);
     });
   };
@@ -116,51 +133,56 @@ $(document).ready(function() {
   var fullTime = true;
   if ($("#userId").text() !== "") {
     getId();
+  }
+  if ($("#userId").text() !== "") {
+    deleteUnsaved();
+    getId();
 
-    console.log("requesting gov jobs");
     $.ajax({
       url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
       method: "GET"
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
         //console.log(response[i]);
-        console.log("gov " + i + " of " + response.length);
         API.saveExample(response[i], "gov");
       }
     });
-    console.log("requesting github jobs");
+
     $.ajax({
       url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
       method: "GET"
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
-        console.log("github " + i + " of " + response.length);
         API.saveExample(response[i], "github");
       }
     });
-    console.log("requesting authentic jobs");
+
     $.ajax({
       url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
       method: "GET"
     }).then(function(response) {
       //console.log(response);
       for (var i = 0; i < response.length; i++) {
-        console.log("authentic " + i + " of " + response.length);
+        // Will add new jobs to the db without saving them
         API.saveExample(response[i], "authentic");
-        refreshExamples();
       }
+      // Will console.log all newly added jobs that aren't saved
+      // expect 6
+      refreshExamples();
+      // Will console.log all saved jobs
+      // expect 3
+      getSavedJobs();
+    });
+
+    // When a save button gets clicked then do a PUT operation to
+    // make saved true. This doesn't work yet
+    $(".save").on("click", function() {
+      $.ajax("/api/jobs/" + this.id, {
+        type: "PUT",
+        data: true
+      }).then(function(res) {
+        res.json();
+      });
     });
   }
-  //API.getExamples();
-
-  // When a save button gets clicked then do a PUT operation to
-  // make saved true. This doesn't work yet
-  $(".save").on("click", function() {
-    $.ajax("/api/jobs/" + this.id, {
-      type: "PUT",
-      data: true
-    }).then(function(res) {
-      res.json();
-    });
-  });
 });

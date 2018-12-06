@@ -4,14 +4,27 @@ var passport = require("passport");
 var keys = require("../keys");
 
 module.exports = function(app) {
-  // Get all jobs
+  // Get all unsaved jobs not saved by the user
   app.get("/api/jobs/:userTableId", function(req, res) {
     db.Job.findAll({
       where: {
+        saved: 0,
         UserId: req.params.userTableId
       }
-    }).then(function(dbUser) {
-      res.json(dbUser);
+    }).then(function(dbJobs) {
+      res.json(dbJobs);
+    });
+  });
+
+  // Get saved jobs for given user
+  app.get("/api/jobs/saved/:userTableId", function(req, res) {
+    db.Job.findAll({
+      where: {
+        saved: 1,
+        UserId: req.params.userTableId
+      }
+    }).then(function(dbJobs) {
+      res.json(dbJobs);
     });
   });
 
@@ -139,11 +152,13 @@ module.exports = function(app) {
   });
 
   // Delete unsaved jobs
-  app.delete("/api/jobs/:userTableId", function(req, res) {
+  app.delete("/api/jobs", function(req, res) {
     db.Job.destroy({
       where: {
         saved: 0
       }
+    }).then(function(dbJob) {
+      res.json(dbJob);
     });
   });
 
@@ -185,7 +200,6 @@ module.exports = function(app) {
     }).then(function(dbUser) {
       res.json(dbUser);
     });
-
     // console.log(req.body.userId);
     // res.render("chat", {
     //   userId: {
