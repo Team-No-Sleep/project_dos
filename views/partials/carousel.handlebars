@@ -1,0 +1,131 @@
+<!--Carousel Wrapper-->
+<div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+
+  <!--Controls-->
+  <div class="controls">
+    <a class="btn-floating" href="#multi-item-example" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
+    <a class="btn-floating" href="#multi-item-example" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+  </div>
+  <!--/.Controls-->
+
+  <!--Indicators-->
+  <ol class="carousel-indicators">
+    <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+    <li data-target="#multi-item-example" data-slide-to="1"></li>
+    <li data-target="#multi-item-example" data-slide-to="2"></li>
+  </ol>
+  <!--/.Indicators-->
+
+  <!--Slides-->
+  <div class="carousel-inner" role="listbox">
+
+    <!--First slide-->
+    {{!-- <div class="carousel-item active">
+      {{#each jobs}}
+      <div class="col-md-2">
+        <div class="card">
+          <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(34).jpg"
+            alt="Card image cap">
+          <div class="card-body">
+            <h4 class="card-title">{{this.jobtitle}}</h4>
+            <h6 class="card-subtitle mb-2">{{this.location}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">{{this.company}}</h6>
+            <p class="card-text">{{this.snippet}}</p>
+            <a href="{{url}}" class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div> --}}
+    <!--/.First slide-->
+
+    <!--Second slide-->
+    <div class="carousel-item active">
+      <div class="card-group">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Web Developer</h4>
+            <h6 class="card-subtitle mb-2">Google</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 clearfix d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Code Monkey</h4>
+            <h6 class="card-subtitle mb-2">Reddit</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 clearfix d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Javascript Developer</h4>
+            <h6 class="card-subtitle mb-2">AirBnB</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+</div>
+    </div>
+    <!--/.Second slide-->
+
+    <!--Third slide-->
+    <div class="carousel-item">
+      <div class="card-group">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Software Engineer</h4>
+            <h6 class="card-subtitle mb-2">Facebook</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 clearfix d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Full Stack Developer</h4>
+            <h6 class="card-subtitle mb-2">IBM</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 clearfix d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Web Developer</h4>
+            <h6 class="card-subtitle mb-2">Intel</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Seattle, WA</h6>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+            <a class="btn btn-primary">Apply</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+    <!--/.Third slide-->
+
+  </div>
+  <!--/.Slides-->
+
+</div>
+<!--/.Carousel Wrapper-->
