@@ -1,10 +1,11 @@
 $(document).ready(function() {
+  console.log("here");
   var userTableId;
   function getId() {
     console.log("getid start");
     $.ajax({
       type: "GET",
-      url: "/api/user/" + $("#userId").text()
+      url: "/api/user/" + user.id
     }).then(function(response) {
       console.log("getid done");
       console.log(response);
@@ -131,13 +132,13 @@ $(document).ready(function() {
   var limit = "10";
   var radius = "25";
   var fullTime = true;
-  if ($("#userId").text() !== "") {
-    getId();
-  }
-  if ($("#userId").text() !== "") {
+  // if ($("#userId").text() !== "") {
+  //   getId();
+  // }
+  if (user.id) {
     deleteUnsaved();
     getId();
-
+    console.log("here2");
     $.ajax({
       url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
       method: "GET"
