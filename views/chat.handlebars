@@ -35,12 +35,22 @@
       <div class="botui-app-container pt-5 mt-5 h-100" id="chat-bot">
         <bot-ui></bot-ui>
       </div>
-
     </div>
+{{!-- <div class="container-fluid"> --}}
+  <div class="mx-auto">
+    {{#each jobs}}
+      {{> carousel }}
+    {{/each}} 
+  </div>
+{{!-- </div> --}}
     {{!-- <iframe width="350" height="430" src="https://console.dialogflow.com/api-client/demo/embedded/915cb787-abe5-4178-a254-debe8d18c0c8">
     </iframe> --}}
   </div>
 </div>
+  <a class="btn btn-primary" data-toggle="collapse" href="#multi-item-example" role="button" aria-expanded="false" aria-controls="collapseExample">
+    collapse
+  </a>
+      
 {{!-- javascript required for botui to work with dialogflow chat --}}
 <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
 <script src="https://unpkg.com/botui/build/botui.js"></script>
