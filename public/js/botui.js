@@ -1,6 +1,4 @@
 var botui = new BotUI('hello-world');
-var agent = require("./chatbot");
-agent.sendTextMessageToDialogFlow("hello", sessionId);
 
 botui.message.add({
     content: 'Hello World from bot!'
