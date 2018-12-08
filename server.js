@@ -97,7 +97,8 @@ app.engine(
     defaultLayout: "main",
     //added the helpers in case it might be needed later
     helpers: {
-      json: object => JSON.stringify(object || null)
+      json: object => JSON.stringify(object || null),
+      socketUrl: () => process.env.SOCKETURL
     }
   })
 );
