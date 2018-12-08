@@ -74,11 +74,12 @@ module.exports = function(app) {
         location +
         "";
     }
+    console.log(queryURL);
     request(queryURL, { json: true }, (err, result, body) => {
       if (err) {
         return console.log(err);
       }
-      //console.log(body)
+      console.log(body);
       //console.log(body.listings.listing[0].title);
       if (apiName === "authentic") {
         data = body.listings.listing;
