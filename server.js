@@ -1,10 +1,13 @@
 require("dotenv").config();
 var passport = require("passport");
 var express = require("express");
+
+var app = express();
+
 var exphbs = require("express-handlebars");
 var session = require("express-session");
-var server = require("http").createServer(express);
-var socketio = require("socket.io")(server);
+var server = require("http").createServer(app);
+var socketio = require("socket.io").listen(server);
 var chatbot = require("./routes/chatbot");
 var request = require("request");
 var userId;
@@ -14,7 +17,6 @@ var keys = require("./keys");
 
 var LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
 
-var app = express();
 var PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -98,7 +100,7 @@ app.engine(
     //added the helpers in case it might be needed later
     helpers: {
       json: object => JSON.stringify(object || null),
-      socketUrl: () => process.env.SOCKETURL
+      socketUrl: () => process.env.SITEURL
     }
   })
 );
@@ -128,23 +130,22 @@ if (process.env.NODE_ENV === "test") {
   syncOptions.force = true;
 }
 
+registerSocketListener();
+
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function() {
   //http port
-  app.listen(PORT, function() {
+  server.listen(PORT, function() {
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
       PORT,
       PORT
     );
   });
-  //server port
-  fromClient();
-  server.listen(8010);
 });
 
 //connecting socket.io and DialogFlow
-function fromClient() {
+function registerSocketListener() {
   socketio.on("connection", function(socket) {
     socket.on("fromClient", function(data) {
       console.log(data);
@@ -178,4 +179,4 @@ function fromClient() {
     });
   });
 }
-module.exports = { app, fromClient };
+module.exports = { app };
