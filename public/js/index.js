@@ -117,6 +117,17 @@ $(document).ready(function() {
           saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
         };
 
+        var apply = $("<button class='btn btn-primary apply'>");
+        apply.text("Apply");
+        apply.attr(
+          "link",
+          $(job.url)
+            .find("a:first")
+            .attr("href")
+        );
+        var save = $("<div class = 'btn btn-primary save'></div>");
+        save.text("Save Job");
+        save.attr("id", job.id);
         var jobInfo = {
           jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
           company: cardTemplate.company.text(job.company),
@@ -169,7 +180,12 @@ $(document).ready(function() {
           "<button type='button' class='btn btn-primary apply'>"
         );
 
-        applyButton.attr("link", savedJob.url);
+        applyButton.attr(
+          "link",
+          $(savedJob.url)
+            .find("a:first")
+            .attr("href")
+        );
         applyButton.text("Apply");
         applyButton.css("margin-bottom", "20px");
         applyButton.css("margin-top", "50px");
@@ -212,29 +228,33 @@ $(document).ready(function() {
   //makes call to dialogFlow using socket.io
   function registerSocketListener() {
     socket.on("jobSearch", function(data) {
-      console.log("hello");
+      console.log(data);
       console.log("job search event received");
-      afterChatBot(data.city.stringValue, data.jobPosition.stringValue);
+      afterChatBot(
+        data.city.stringValue,
+        data.jobPosition.stringValue,
+        data.state.stringValue
+      );
     });
   }
   /***************** Grabbing data from Indeed API *********************/
 
-  function afterChatBot(geoLocation, job) {
-    var jobTemp;
+  function afterChatBot(geoLocation, job, state) {
+    var fullTime = true;
+    var jobTemp = "";
     var jobArray;
     if (job.includes(" ")) {
-      jobArray = job.splice(" ");
+      jobArray = job.split(" ");
+      console.log(jobArray);
       for (var i = 0; i < jobArray.length; i++) {
         jobTemp += jobArray[i] + "+";
       }
       job = jobTemp.substring(0, jobTemp.length - 1);
       console.log(job);
     }
-    // var geoLocation = "seattle%2C+wa";
-    var state = "wa";
-    var fullTime = true;
+    console.log(geoLocation);
+    console.log(job);
 
-    
     deleteUnsaved();
     getId();
     console.log("here2");
