@@ -74,7 +74,7 @@ $(document).ready(function() {
 
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < data.length; i++) {
         // console.log("making card")
         var job = data[i];
         console.log(job);
@@ -101,7 +101,6 @@ $(document).ready(function() {
         cardTemplate.applyButton.text("Apply");
 
         function generateCard(carouselItem) {
-          console.log
           var col = $("<div class='col-md-4'></div>");
           var card = $("<div class='card'></div>");
           var cardBody = $("<div class='card-body'></div>");
