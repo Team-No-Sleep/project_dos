@@ -127,6 +127,8 @@ if (process.env.NODE_ENV === "test") {
   syncOptions.force = true;
 }
 
+server.listen(PORT);
+
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function() {
   //http port
