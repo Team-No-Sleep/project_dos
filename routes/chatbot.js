@@ -41,9 +41,17 @@ async function textQuery(input, sessionId) {
   } else {
     console.log("  No intent matched.");
   }
+  let jobSearchParams = null;
+  if (
+    result.intent.displayName === "acknowledge job search" &&
+    result.allRequiredParamsPresent === true
+  ) {
+    jobSearchParams = result.parameters.fields;
+  }
   return {
     response: result.fulfillmentText,
-    sessionId: sessionId
+    sessionId: sessionId,
+    jobSearchParams: jobSearchParams
   };
 }
 

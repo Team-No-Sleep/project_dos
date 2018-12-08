@@ -1,5 +1,4 @@
 var botui = new BotUI("chat-bot");
-var socket = io.connect("http://localhost:8010");
 registerSocketListener();
 
 botui.message

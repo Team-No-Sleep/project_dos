@@ -154,6 +154,9 @@ function fromClient() {
           server: res.response,
           sessionId: res.sessionId
         });
+        if (res.jobSearchParams !== null) {
+          socket.emit("jobSearch", res.jobSearchParams);
+        }
       });
     });
 
