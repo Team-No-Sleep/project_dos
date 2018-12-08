@@ -70,11 +70,12 @@ $(document).ready(function() {
   var refreshExamples = function() {
     console.log("refresh examples start");
     API.getExamples().then(function(data) {
+      console.log(data.length);
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
       for (var i = 0; i < data.length; i++) {
         var job = data[i];
-        console.log(`here is my ${job}`);
+        console.log(job);
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),

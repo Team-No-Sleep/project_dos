@@ -101,7 +101,7 @@ module.exports = function(app) {
         company: req.body.company,
         location: req.body.location,
         date: req.body.created_at,
-        snippet: req.body.description,
+        snippet: "",
         url: req.body.how_to_apply,
         type: req.body.type,
         saved: false,
@@ -117,7 +117,7 @@ module.exports = function(app) {
         company: req.body.company.name,
         location: req.body.company.location.name,
         date: req.body.post_date,
-        snippet: req.body.description,
+        snippet: "",
         url: req.body.url,
         type: req.body.type.name,
         saved: false,
@@ -130,10 +130,9 @@ module.exports = function(app) {
     } else if (req.params.apiName === "gov") {
       var locations = "";
       for (var i = 0; i < req.body.locations.length; i++) {
-        if (req.body.locations[i].slice(-2) === "WA") {
-          locations += req.body.locations[i];
-        }
+        locations += req.body.locations[i];
       }
+      console.log(locations);
       db.Job.create({
         jobtitle: req.body.position_title,
         company: req.body.organization_name,
