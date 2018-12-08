@@ -204,11 +204,12 @@ $(document).ready(function() {
       job = jobTemp.substring(0, jobTemp.length - 1);
       console.log(job);
     }
+    console.log(geoLocation);
+    console.log(job);
     // var geoLocation = "seattle%2C+wa";
     var state = "wa";
     var fullTime = true;
 
-    
     deleteUnsaved();
     getId();
     console.log("here2");
