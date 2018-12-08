@@ -3,6 +3,7 @@ $(document).ready(function() {
   $(document).on("click", ".apply", applyJob);
   $(document).on("click", ".deleteSaved", deleteSaved);
   var userTableId;
+  registerSocketListener();
   function getId() {
     console.log("getid start");
     $.ajax({
@@ -182,58 +183,32 @@ $(document).ready(function() {
     });
   };
 
-  // handleFormSubmit is called whenever we submit a new example
-  // Save the new example to the db and refresh the list
-  var handleFormSubmit = function(event) {
-    event.preventDefault();
-
-    var example = {
-      text: $exampleText.val().trim(),
-      description: $exampleDescription.val().trim()
-    };
-
-    if (!(example.text && example.description)) {
-      alert("You must enter an example text and description!");
-      return;
-    }
-
-    API.saveExample(example).then(function() {
-      refreshExamples();
+  //makes call to dialogFlow using socket.io
+  function registerSocketListener() {
+    socket.on("jobSearch", function(data) {
+      console.log("hello");
+      console.log("job search event received");
+      afterChatBot(data.city.stringValue, data.jobPosition.stringValue);
     });
-
-    $exampleText.val("");
-    $exampleDescription.val("");
-  };
-
-  // handleDeleteBtnClick is called when an example's delete button is clicked
-  // Remove the example from the db and refresh the list
-  var handleDeleteBtnClick = function() {
-    var idToDelete = $(this)
-      .parent()
-      .attr("data-id");
-
-    API.deleteExample(idToDelete).then(function() {
-      refreshExamples();
-    });
-  };
-
-  // Add event listeners to the submit and delete buttons
-
+  }
   /***************** Grabbing data from Indeed API *********************/
 
-  //Placeholder queries
-  var job = "software+engineer";
-  var publisherId = "123456789";
-  var geoLocation = "seattle%2C+wa";
-  var state = geoLocation.slice(-2);
-  var limit = "10";
-  var radius = "25";
-  var fullTime = true;
-  // if ($("#userId").text() !== "") {
-  //   getId();
-  // }
-  if (user.id) {
-    registerSocketListener();
+  function afterChatBot(geoLocation, job) {
+    var jobTemp;
+    var jobArray;
+    if (job.includes(" ")) {
+      jobArray = job.splice(" ");
+      for (var i = 0; i < jobArray.length; i++) {
+        jobTemp += jobArray[i] + "+";
+      }
+      job = jobTemp.substring(0, jobTemp.length - 1);
+      console.log(job);
+    }
+    // var geoLocation = "seattle%2C+wa";
+    var state = "wa";
+    var fullTime = true;
+
+    
     deleteUnsaved();
     getId();
     console.log("here2");
@@ -298,10 +273,3 @@ $(document).ready(function() {
     getSavedJobs();
   });
 });
-//makes call to dialogFlow using socket.io
-function registerSocketListener() {
-  socket.on("jobSearch", function(data) {
-    console.log("job search event received");
-    console.log(data);
-  });
-}
