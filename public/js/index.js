@@ -175,6 +175,7 @@ $(document).ready(function() {
   //   getId();
   // }
   if (user.id) {
+    registerSocketListener();
     deleteUnsaved();
     getId();
     console.log("here2");
@@ -226,3 +227,10 @@ $(document).ready(function() {
     });
   }
 });
+//makes call to dialogFlow using socket.io
+function registerSocketListener() {
+  socket.on("jobSearch", function(data) {
+    console.log("job search event received");
+    console.log(data);
+  });
+}
