@@ -72,9 +72,9 @@ $(document).ready(function() {
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < data.length; i++) {
         var job = data[i];
-
+console.log(`here is my ${job}`);
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),

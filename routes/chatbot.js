@@ -44,7 +44,7 @@ async function textQuery(input, sessionId) {
   }
   let jobSearchParams = null;
   if (
-    result.intent.displayName === "acknowledge job search" &&
+    result.intent.displayName === "acknowledge job search - yes" &&
     result.allRequiredParamsPresent === true
   ) {
     jobSearchParams = result.parameters.fields;

@@ -48,7 +48,7 @@ passport.use(
     {
       clientID: keys.keys.id,
       clientSecret: keys.keys.secret,
-      callbackURL: "http://localhost:3000/auth/linkedin/callback",
+      callbackURL: `${process.env.SITEURL}/auth/linkedin/callback`,
       scope: ["r_emailaddress", "r_basicprofile"],
       state: true
     },
@@ -140,6 +140,7 @@ db.sequelize.sync(syncOptions).then(function() {
   //server port
   fromClient();
   server.listen(8010);
+  //server.listen(PORT);
 });
 
 //connecting socket.io and DialogFlow
