@@ -139,8 +139,8 @@ db.sequelize.sync(syncOptions).then(function() {
   });
   //server port
   fromClient();
-  // server.listen(8010);
-  // server.listen(PORT);
+  server.listen(8010);
+  server.listen(process.env.PORT || 3000);
 });
 
 //connecting socket.io and DialogFlow
