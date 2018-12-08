@@ -16,7 +16,7 @@ var LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var server_host = process.env.YOUR_HOST || "0.0.0.0";
+var serverHost = process.env.YOUR_HOST || "0.0.0.0";
 // Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -130,7 +130,7 @@ if (process.env.NODE_ENV === "test") {
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function() {
   //http port
-  app.listen(PORT, server_host, function() {
+  app.listen(PORT, serverHost, function() {
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
       PORT,
@@ -140,6 +140,7 @@ db.sequelize.sync(syncOptions).then(function() {
   //server port
   fromClient();
   server.listen(8010);
+  server.listen(PORT, serverHost);
 });
 
 //connecting socket.io and DialogFlow
