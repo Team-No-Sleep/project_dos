@@ -16,7 +16,7 @@ $(document).ready(function() {
   var API = {
     saveExample: function(example, apiName) {
       console.log(userTableId);
-      console.log("save example start");
+      //console.log("save example start");
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
@@ -25,7 +25,7 @@ $(document).ready(function() {
         url: "/api/jobs/" + apiName + "/" + userTableId,
         data: JSON.stringify(example)
       }).then(function(response) {
-        console.log("save example done");
+        //console.log("save example done");
       });
     },
     getExamples: function() {
@@ -68,8 +68,47 @@ $(document).ready(function() {
     console.log("refresh examples start");
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
+      console.log(data[0]);
+      console.log(data[1]);
+      console.log(data[2]);
+      console.log(data[3]);
+      console.log(data[4]);
+
       console.log("refresh examples end");
-      console.log(data);
+      for (var i = 0; i < data.length; i++) {
+        var job = data[i];
+        console.log("here");
+        console.log(data.length);
+        var col = $("<div class='col-md-4'></div>");
+        var card = $("<div class = 'card'></div>");
+        var cardBody = $("<div class = 'card-body'></div>");
+        var cardTitle = $("<h4 class = 'card-title'>");
+
+        cardTitle.text(job.jobtitle);
+        var cardSubtitle1 = $("<h6 class='card-subtitle mb-2'>");
+        cardSubtitle1.text(job.company);
+        var cardSubtitle2 = $("<h6 class='card-subtitle mb-2 text muted'>");
+        cardSubtitle2.text(job.location);
+        var cardText = $("<p class='card-text'>");
+        cardText.html(job.snippet);
+        var apply = $("<a class='btn btn-primary'>");
+        apply.text("Apply");
+        var save = $("<div class = 'btn btn-primary save'></div>");
+        save.text("Save Job");
+        save.attr("id", job.id);
+
+        apply.append(save);
+        cardText.append(apply);
+        cardSubtitle2.append(cardText);
+        cardSubtitle1.append(cardSubtitle2);
+        cardTitle.append(cardSubtitle1);
+        cardBody.append(cardTitle);
+        card.append(cardBody);
+        col.append(card);
+        //item.append(col);
+        $("#cards").append(col);
+      }
+      // console.log(data);
     });
   };
 
@@ -144,7 +183,7 @@ $(document).ready(function() {
       method: "GET"
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
-        console.log(response[i]);
+        // console.log(response[i]);
         API.saveExample(response[i], "gov");
       }
     });
@@ -162,7 +201,7 @@ $(document).ready(function() {
       url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
       method: "GET"
     }).then(function(response) {
-      console.log(response);
+      // console.log(response);
       for (var i = 0; i < response.length; i++) {
         // Will add new jobs to the db without saving them
         API.saveExample(response[i], "authentic");
