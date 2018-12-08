@@ -138,8 +138,6 @@ $(document).ready(function() {
         company.css("text-align", "center");
         company.css("width", "100%");
 
-
-
         var applyButton = $(
           "<button type='button' class='btn btn-primary apply'>"
         );
