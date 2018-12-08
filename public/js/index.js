@@ -111,7 +111,7 @@ $(document).ready(function() {
         }
         generateCard("#item1");
       }
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 3; i < data.length; i++) {
         var job = data[i];
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
@@ -154,6 +154,8 @@ $(document).ready(function() {
         }
         generateCard("#item2");
       }
+      $(".controls").attr("class", "controls clearfix");
+
       console.log(data);
     });
   };
