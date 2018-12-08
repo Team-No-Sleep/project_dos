@@ -71,9 +71,11 @@ $(document).ready(function() {
     console.log("refresh examples start");
     API.getExamples().then(function(data) {
       console.log(data.length);
+
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < 3; i++) {
+        // console.log("making card")
         var job = data[i];
         console.log(job);
         var cardTemplate = {
@@ -99,6 +101,7 @@ $(document).ready(function() {
         cardTemplate.applyButton.text("Apply");
 
         function generateCard(carouselItem) {
+          console.log
           var col = $("<div class='col-md-4'></div>");
           var card = $("<div class='card'></div>");
           var cardBody = $("<div class='card-body'></div>");
@@ -268,15 +271,15 @@ $(document).ready(function() {
 
     deleteUnsaved();
     console.log("here2");
-    $.ajax({
-      url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
-      method: "GET"
-    }).then(function(response) {
-      for (var i = 0; i < response.length; i++) {
-        // console.log(response[i]);
-        API.saveExample(response[i], "gov");
-      }
-    });
+    // $.ajax({
+    //   url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
+    //   method: "GET"
+    // }).then(function(response) {
+    //   for (var i = 0; i < response.length; i++) {
+    //     // console.log(response[i]);
+    //     API.saveExample(response[i], "gov");
+    //   }
+    // });
 
     $.ajax({
       url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
