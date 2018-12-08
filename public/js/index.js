@@ -1,5 +1,7 @@
 $(document).ready(function() {
-  console.log("here");
+  $(document).on("click", ".save", saveJob);
+  $(document).on("click", ".apply", applyJob);
+  $(document).on("click", ".deleteSaved", deleteSaved);
   var userTableId;
   function getId() {
     console.log("getid start");
@@ -68,12 +70,6 @@ $(document).ready(function() {
     console.log("refresh examples start");
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
-      console.log(data[0]);
-      console.log(data[1]);
-      console.log(data[2]);
-      console.log(data[3]);
-      console.log(data[4]);
-
       console.log("refresh examples end");
       for (var i = 0; i < 3; i++) {
         var job = data[i];
@@ -147,7 +143,62 @@ $(document).ready(function() {
 
   var getSavedJobs = function() {
     API.getSavedJobs().then(function(data) {
+      $("#saved").empty();
+
+      // put saved jobs into modal
       console.log(data);
+      for (var i = 0; i < data.length; i++) {
+        var savedJob = data[i];
+        var jobTitle = $("<h2>");
+        jobTitle.text(savedJob.jobtitle);
+        jobTitle.css("color", "black");
+        jobTitle.attr("id", "savedDiv" + savedJob.id);
+        jobTitle.css("float", "left");
+        jobTitle.css("text-align", "center");
+        jobTitle.css("width", "100%");
+
+        var company = $("<h3>");
+        company.text(savedJob.company);
+        company.css("color", "black");
+        company.css("float", "left");
+        company.css("text-align", "center");
+        company.css("width", "100%");
+
+        var applyButton = $(
+          "<button type='button' class='btn btn-primary apply'>"
+        );
+
+        applyButton.attr("link", savedJob.url);
+        applyButton.text("Apply");
+        applyButton.css("margin-bottom", "20px");
+        applyButton.css("margin-top", "50px");
+
+        applyButton.css("margin-right", "20px");
+        applyButton.css("position", "relative");
+        applyButton.css("left", "150px");
+        applyButton.css("float", "left");
+
+        var deleteSaved = $(
+          "<button type='button' class='btn btn-primary deleteSaved'>"
+        );
+
+        deleteSaved.text("Delete");
+        deleteSaved.css("margin-bottom", "20px");
+        deleteSaved.css("margin-top", "50px");
+        deleteSaved.css("position", "relative");
+        deleteSaved.css("left", "150px");
+        deleteSaved.css("float", "left");
+
+        deleteSaved.attr("id", savedJob.id);
+        // deleteSaved.css("float", "right");
+        applyButton.append(deleteSaved);
+
+        company.append(applyButton);
+        company.append(deleteSaved);
+
+        jobTitle.append(company);
+        $("#saved").append(jobTitle);
+      }
     });
   };
 
@@ -208,6 +259,7 @@ $(document).ready(function() {
   //   getId();
   // }
   if (user.id) {
+    registerSocketListener();
     deleteUnsaved();
     getId();
     console.log("here2");
@@ -244,18 +296,38 @@ $(document).ready(function() {
       refreshExamples();
       // Will console.log all saved jobs
       // expect 3
-      getSavedJobs();
-    });
-
-    // When a save button gets clicked then do a PUT operation to
-    // make saved true. This doesn't work yet
-    $(".save").on("click", function() {
-      $.ajax("/api/jobs/" + this.id, {
-        type: "PUT",
-        data: true
-      }).then(function(res) {
-        res.json();
-      });
     });
   }
+  // When a save button gets clicked then do a PUT operation to
+  // make saved true. This doesn't work yet
+  function saveJob() {
+    console.log("hey");
+    $.ajax("/api/jobs/" + this.id, {
+      type: "PUT"
+    });
+  }
+
+  function applyJob() {
+    console.log("redirecting to apply website");
+    window.open(this.getAttribute("link"));
+  }
+
+  function deleteSaved() {
+    console.log(this.id);
+    $("#savedDiv" + this.id).empty();
+    $.ajax("/api/jobs/" + this.id, {
+      type: "DELETE"
+    });
+  }
+
+  $("#getSavedJobs").on("click", function() {
+    getSavedJobs();
+  });
 });
+//makes call to dialogFlow using socket.io
+function registerSocketListener() {
+  socket.on("jobSearch", function(data) {
+    console.log("job search event received");
+    console.log(data);
+  });
+}

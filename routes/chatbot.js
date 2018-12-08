@@ -1,6 +1,7 @@
 require("dotenv").config();
 const dialogflow = require("dialogflow");
 const uuid = require("uuid");
+const structJson = require("./structjson");
 /**
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
@@ -41,9 +42,17 @@ async function textQuery(input, sessionId) {
   } else {
     console.log("  No intent matched.");
   }
+  let jobSearchParams = null;
+  if (
+    result.intent.displayName === "acknowledge job search" &&
+    result.allRequiredParamsPresent === true
+  ) {
+    jobSearchParams = result.parameters.fields;
+  }
   return {
     response: result.fulfillmentText,
-    sessionId: sessionId
+    sessionId: sessionId,
+    jobSearchParams: jobSearchParams
   };
 }
 
@@ -51,7 +60,7 @@ async function textQuery(input, sessionId) {
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
  */
-async function eventQuery(input, sessionId) {
+async function eventQuery(input, sessionId, params) {
   // A unique identifier for the given session
   sessionId = sessionId || uuid.v4();
 
@@ -69,11 +78,13 @@ async function eventQuery(input, sessionId) {
       event: {
         // The query to send to the dialogflow agent
         name: input,
+        parameters: structJson.jsonToStructProto(params),
         // The language used by the client (en-US)
         languageCode: "en"
       }
     }
   };
+  console.log(JSON.stringify(request));
 
   // Send request and log result
   const responses = await sessionClient.detectIntent(request);
