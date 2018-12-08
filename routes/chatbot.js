@@ -24,7 +24,7 @@ async function textQuery(input, sessionId) {
         // The query to send to the dialogflow agent
         text: input,
         // The language used by the client (en-US)
-        languageCode: "en-US"
+        languageCode: "en"
       }
     }
   };
@@ -51,7 +51,7 @@ async function textQuery(input, sessionId) {
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
  */
-async function eventQuery(input, sessionId) {
+async function eventQuery(input, sessionId, params) {
   // A unique identifier for the given session
   sessionId = sessionId || uuid.v4();
 
@@ -69,11 +69,13 @@ async function eventQuery(input, sessionId) {
       event: {
         // The query to send to the dialogflow agent
         name: input,
+        parameters: params,
         // The language used by the client (en-US)
-        languageCode: "en-US"
+        languageCode: "en"
       }
     }
   };
+  console.log(JSON.stringify(request));
 
   // Send request and log result
   const responses = await sessionClient.detectIntent(request);

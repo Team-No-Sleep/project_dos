@@ -159,14 +159,16 @@ function fromClient() {
 
     socket.on("clientEvent", function(data) {
       console.log(data);
-      chatbot.eventQuery(data.client, data.sessionId).then(function(res) {
-        console.log("Sample is done.");
-        console.log(res);
-        socket.emit("fromServer", {
-          server: res.response,
-          sessionId: res.sessionId
+      chatbot
+        .eventQuery(data.client, data.sessionId, data.params)
+        .then(function(res) {
+          console.log("Sample is done.");
+          console.log(res);
+          socket.emit("fromServer", {
+            server: res.response,
+            sessionId: res.sessionId
+          });
         });
-      });
     });
   });
 }
