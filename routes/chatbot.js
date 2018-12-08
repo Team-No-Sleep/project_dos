@@ -2,6 +2,15 @@ require("dotenv").config();
 const dialogflow = require("dialogflow");
 const uuid = require("uuid");
 const structJson = require("./structjson");
+const clientConfig = {
+  credentials: {
+    // eslint-disable-next-line camelcase
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    // eslint-disable-next-line camelcase
+    client_email: process.env.GOOGLE_CLIENT_EMAIL
+  }
+};
+
 /**
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
@@ -11,7 +20,7 @@ async function textQuery(input, sessionId) {
   sessionId = sessionId || uuid.v4();
 
   // Create a new session
-  const sessionClient = new dialogflow.SessionsClient();
+  const sessionClient = new dialogflow.SessionsClient(clientConfig);
   const sessionPath = sessionClient.sessionPath(
     process.env.DIALOGFLOW_PROJECT_ID,
     sessionId
@@ -65,7 +74,7 @@ async function eventQuery(input, sessionId, params) {
   sessionId = sessionId || uuid.v4();
 
   // Create a new session
-  const sessionClient = new dialogflow.SessionsClient();
+  const sessionClient = new dialogflow.SessionsClient(clientConfig);
   const sessionPath = sessionClient.sessionPath(
     process.env.DIALOGFLOW_PROJECT_ID,
     sessionId
