@@ -24,7 +24,7 @@ async function textQuery(input, sessionId) {
         // The query to send to the dialogflow agent
         text: input,
         // The language used by the client (en-US)
-        languageCode: "en-US"
+        languageCode: "en"
       }
     }
   };
@@ -70,7 +70,7 @@ async function eventQuery(input, sessionId) {
         // The query to send to the dialogflow agent
         name: input,
         // The language used by the client (en-US)
-        languageCode: "en-US"
+        languageCode: "en"
       }
     }
   };
