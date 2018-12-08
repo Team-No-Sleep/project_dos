@@ -23,6 +23,17 @@ body, .bg-black {
   transform: translate(-50%, -50%);
 }
 
+
+#saved {
+  float: right;
+  color: white;
+  margin-right: 5%;
+
+  /* top: 10px; */
+  
+
+}
+
 /* #userId {
   opacity: 0;
 } */
