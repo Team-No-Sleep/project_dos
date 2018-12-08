@@ -144,7 +144,7 @@ $(document).ready(function() {
       method: "GET"
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
-        //console.log(response[i]);
+        console.log(response[i]);
         API.saveExample(response[i], "gov");
       }
     });
@@ -162,7 +162,7 @@ $(document).ready(function() {
       url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
       method: "GET"
     }).then(function(response) {
-      //console.log(response);
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         // Will add new jobs to the db without saving them
         API.saveExample(response[i], "authentic");

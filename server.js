@@ -5,7 +5,7 @@ var passport = require("passport");
 var session = require("express-session");
 var server = require("http").createServer(express);
 var socketio = require("socket.io")(server);
-var chatbot = require("./public/js/chatbot");
+var chatbot = require("./routes/chatbot");
 var request = require("request");
 var userId;
 
@@ -138,19 +138,36 @@ db.sequelize.sync(syncOptions).then(function() {
     );
   });
   //server port
+  fromClient();
   server.listen(8010);
 });
 
-//var dialogFlow = new chatbot.DialogFlow();
 //connecting socket.io and DialogFlow
-var fromClient = function() {
+function fromClient() {
   socketio.on("connection", function(socket) {
     socket.on("fromClient", function(data) {
-      dialogFlow.sendTextMessageToDialogFlow(data.client, sessionId);
-      // api.getRes(data.client).then(function(res) {
-      //   socket.emit("fromServer", { server: res });
-      // });
+      console.log(data);
+      chatbot.textQuery(data.client, data.sessionId).then(function(res) {
+        console.log("Sample is done.");
+        console.log(res);
+        socket.emit("fromServer", {
+          server: res.response,
+          sessionId: res.sessionId
+        });
+      });
+    });
+
+    socket.on("clientEvent", function(data) {
+      console.log(data);
+      chatbot.eventQuery(data.client, data.sessionId).then(function(res) {
+        console.log("Sample is done.");
+        console.log(res);
+        socket.emit("fromServer", {
+          server: res.response,
+          sessionId: res.sessionId
+        });
+      });
     });
   });
-};
+}
 module.exports = { app, fromClient };
