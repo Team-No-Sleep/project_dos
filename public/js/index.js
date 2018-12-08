@@ -74,7 +74,7 @@ $(document).ready(function() {
       console.log("refresh examples end");
       for (var i = 0; i < data.length; i++) {
         var job = data[i];
-console.log(`here is my ${job}`);
+        console.log(`here is my ${job}`);
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),
@@ -107,7 +107,6 @@ console.log(`here is my ${job}`);
       }
       for (var i = 0; i < data.length; i++) {
         var job = data[i];
-        var apply = $("<button class='btn btn-primary apply'>");
         apply.text("Apply");
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
@@ -115,7 +114,7 @@ console.log(`here is my ${job}`);
           location: $("<h6 class='card-subtitle mb-2 text muted'>"),
           snippet: $("<p class='job-snippet'>"),
           saveButton: $("<a class ='btn btn-primary save'>Save Job</a>"),
-          applyButton: apply
+          applyButton: $("<button class='btn btn-primary apply'>")
         };
 
         var save = $("<div class = 'btn btn-primary save'></div>");

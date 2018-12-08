@@ -1,7 +1,7 @@
 require("dotenv").config();
+var passport = require("passport");
 var express = require("express");
 var exphbs = require("express-handlebars");
-var passport = require("passport");
 var session = require("express-session");
 var server = require("http").createServer(express);
 var socketio = require("socket.io")(server);
@@ -140,7 +140,6 @@ db.sequelize.sync(syncOptions).then(function() {
   //server port
   fromClient();
   server.listen(8010);
-  //server.listen(PORT);
 });
 
 //connecting socket.io and DialogFlow
