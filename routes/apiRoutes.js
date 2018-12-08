@@ -171,11 +171,18 @@ module.exports = function(app) {
 
   // Update saved status
   app.put("/api/jobs/:id", function(req, res) {
-    db.Job.update({ saved: req.body.data }, { where: req.params.id }).then(
-      function(dbPost) {
-        res.json(dbPost);
+    db.Job.update(
+      {
+        saved: 1
+      },
+      {
+        where: {
+          id: req.params.id
+        }
       }
-    );
+    ).then(function(dbPost) {
+      res.json(dbPost);
+    });
   });
 
   //return the user the user to the login page
