@@ -152,7 +152,8 @@ function fromClient() {
         console.log(res);
         socket.emit("fromServer", {
           server: res.response,
-          sessionId: res.sessionId
+          sessionId: res.sessionId,
+          uiMetaData: data.uiMetaData
         });
         if (res.jobSearchParams !== null) {
           socket.emit("jobSearch", res.jobSearchParams);
@@ -169,7 +170,8 @@ function fromClient() {
           console.log(res);
           socket.emit("fromServer", {
             server: res.response,
-            sessionId: res.sessionId
+            sessionId: res.sessionId,
+            uiMetaData: data.uiMetaData
           });
         });
     });

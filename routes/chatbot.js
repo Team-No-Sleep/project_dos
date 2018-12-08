@@ -1,6 +1,7 @@
 require("dotenv").config();
 const dialogflow = require("dialogflow");
 const uuid = require("uuid");
+const structJson = require("./structjson");
 /**
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
@@ -77,7 +78,7 @@ async function eventQuery(input, sessionId, params) {
       event: {
         // The query to send to the dialogflow agent
         name: input,
-        parameters: params,
+        parameters: structJson.jsonToStructProto(params),
         // The language used by the client (en-US)
         languageCode: "en"
       }
