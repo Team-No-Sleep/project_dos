@@ -105,26 +105,19 @@ $(document).ready(function() {
         }
         generateCard("#item1");
       }
-      for (var i = 3; i < data.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         var job = data[i];
-
+        var apply = $("<button class='btn btn-primary apply'>");
+        apply.text("Apply");
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),
           location: $("<h6 class='card-subtitle mb-2 text muted'>"),
           snippet: $("<p class='job-snippet'>"),
-          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
-          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>"),
+          applyButton: apply
         };
 
-        var apply = $("<button class='btn btn-primary apply'>");
-        apply.text("Apply");
-        apply.attr(
-          "link",
-          $(job.url)
-            .find("a:first")
-            .attr("href")
-        );
         var save = $("<div class = 'btn btn-primary save'></div>");
         save.text("Save Job");
         save.attr("id", job.id);
@@ -132,8 +125,15 @@ $(document).ready(function() {
           jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
           company: cardTemplate.company.text(job.company),
           location: cardTemplate.location.text(job.location),
-          saveButton: cardTemplate.saveButton.attr("id", job.id)
+          saveButton: cardTemplate.saveButton.attr("id", job.id),
+          applyButton: cardTemplate.applyButton.attr(
+            "link",
+            $(job.url)
+              .find("a:first")
+              .attr("href")
+          )
         };
+        console.log(job.url);
 
         function generateCard(carouselItem) {
           var col = $("<div class='col-md-4'></div>");
@@ -239,6 +239,9 @@ $(document).ready(function() {
   }
   /***************** Grabbing data from Indeed API *********************/
 
+  if (user.id) {
+    getId();
+  }
   function afterChatBot(geoLocation, job, state) {
     var fullTime = true;
     var jobTemp = "";
@@ -256,7 +259,6 @@ $(document).ready(function() {
     console.log(job);
 
     deleteUnsaved();
-    getId();
     console.log("here2");
     $.ajax({
       url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
