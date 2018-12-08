@@ -3,6 +3,7 @@ $(document).ready(function() {
   $(document).on("click", ".apply", applyJob);
   $(document).on("click", ".deleteSaved", deleteSaved);
   var userTableId;
+  registerSocketListener();
   function getId() {
     console.log("getid start");
     $.ajax({
@@ -71,47 +72,84 @@ $(document).ready(function() {
     API.getExamples().then(function(data) {
       // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
       console.log("refresh examples end");
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < 3; i++) {
         var job = data[i];
-        console.log("here");
-        console.log(data.length);
-        var col = $("<div class='col-md-4'></div>");
-        var card = $("<div class = 'card'></div>");
-        var cardBody = $("<div class = 'card-body'></div>");
-        var cardTitle = $("<h4 class = 'card-title'>");
 
-        cardTitle.text(job.jobtitle);
-        cardTitle.css("margin-bottom", "5px");
-        var cardSubtitle1 = $("<h6 class='card-subtitle mb-2'>");
-        cardSubtitle1.text(job.company);
-        cardSubtitle1.css("margin-bottom", "5px");
-        var cardSubtitle2 = $("<h6 class='card-subtitle mb-2 text muted'>");
-        cardSubtitle2.text(job.location);
-        cardSubtitle2.css("margin-bottom", "5px");
+        var cardTemplate = {
+          jobTitle: $("<h4 class='job-title'>"),
+          company: $("<h6 class='company-subtitle mb-2'>"),
+          location: $("<h6 class='card-subtitle mb-2 text muted'>"),
+          snippet: $("<p class='job-snippet'>"),
+          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+        };
 
-        var cardText = $("<p class='card-text'>");
-        cardText.html(job.snippet.substr(0, 140));
-        cardText.css("margin-bottom", "5px");
+        var jobInfo = {
+          jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
+          company: cardTemplate.company.text(job.company),
+          location: cardTemplate.location.text(job.location),
+          saveButton: cardTemplate.saveButton.attr("id", job.id)
+        };
+
+        function generateCard(carouselItem) {
+          var col = $("<div class='col-md-4'></div>");
+          var card = $("<div class='card'></div>");
+          var cardBody = $("<div class='card-body'></div>");
+          col.append(card);
+          card.append(cardBody);
+          jobInfo; //fills in relevant data
+          Object.keys(cardTemplate).forEach(function(item) {
+            cardBody.append(cardTemplate[item]);
+          });
+          $(carouselItem).append(col);
+        }
+        generateCard("#item1");
+      }
+      for (var i = 3; i < data.length; i++) {
+        var job = data[i];
+
+        var cardTemplate = {
+          jobTitle: $("<h4 class='job-title'>"),
+          company: $("<h6 class='company-subtitle mb-2'>"),
+          location: $("<h6 class='card-subtitle mb-2 text muted'>"),
+          snippet: $("<p class='job-snippet'>"),
+          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+        };
 
         var apply = $("<button class='btn btn-primary apply'>");
         apply.text("Apply");
-        apply.attr("link", job.url);
+        apply.attr(
+          "link",
+          $(job.url)
+            .find("a:first")
+            .attr("href")
+        );
         var save = $("<div class = 'btn btn-primary save'></div>");
         save.text("Save Job");
         save.attr("id", job.id);
+        var jobInfo = {
+          jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
+          company: cardTemplate.company.text(job.company),
+          location: cardTemplate.location.text(job.location),
+          saveButton: cardTemplate.saveButton.attr("id", job.id)
+        };
 
-        cardText.append(save);
-        cardText.append(apply);
-        cardSubtitle2.append(cardText);
-        cardSubtitle1.append(cardSubtitle2);
-        cardTitle.append(cardSubtitle1);
-        cardBody.append(cardTitle);
-        card.append(cardBody);
-        col.append(card);
-        //item.append(col);
-        $("#cards").append(col);
+        function generateCard(carouselItem) {
+          var col = $("<div class='col-md-4'></div>");
+          var card = $("<div class='card'></div>");
+          var cardBody = $("<div class='card-body'></div>");
+          col.append(card);
+          card.append(cardBody);
+          jobInfo; //fills in relevant data
+          Object.keys(cardTemplate).forEach(function(item) {
+            cardBody.append(cardTemplate[item]);
+          });
+          $(carouselItem).append(col);
+        }
+        generateCard("#item2");
       }
-      // console.log(data);
+      console.log(data);
     });
   };
 
@@ -142,7 +180,12 @@ $(document).ready(function() {
           "<button type='button' class='btn btn-primary apply'>"
         );
 
-        applyButton.attr("link", savedJob.url);
+        applyButton.attr(
+          "link",
+          $(savedJob.url)
+            .find("a:first")
+            .attr("href")
+        );
         applyButton.text("Apply");
         applyButton.css("margin-bottom", "20px");
         applyButton.css("margin-top", "50px");
@@ -182,58 +225,36 @@ $(document).ready(function() {
     });
   };
 
-  // handleFormSubmit is called whenever we submit a new example
-  // Save the new example to the db and refresh the list
-  var handleFormSubmit = function(event) {
-    event.preventDefault();
-
-    var example = {
-      text: $exampleText.val().trim(),
-      description: $exampleDescription.val().trim()
-    };
-
-    if (!(example.text && example.description)) {
-      alert("You must enter an example text and description!");
-      return;
-    }
-
-    API.saveExample(example).then(function() {
-      refreshExamples();
+  //makes call to dialogFlow using socket.io
+  function registerSocketListener() {
+    socket.on("jobSearch", function(data) {
+      console.log(data);
+      console.log("job search event received");
+      afterChatBot(
+        data.city.stringValue,
+        data.jobPosition.stringValue,
+        data.state.stringValue
+      );
     });
-
-    $exampleText.val("");
-    $exampleDescription.val("");
-  };
-
-  // handleDeleteBtnClick is called when an example's delete button is clicked
-  // Remove the example from the db and refresh the list
-  var handleDeleteBtnClick = function() {
-    var idToDelete = $(this)
-      .parent()
-      .attr("data-id");
-
-    API.deleteExample(idToDelete).then(function() {
-      refreshExamples();
-    });
-  };
-
-  // Add event listeners to the submit and delete buttons
-
+  }
   /***************** Grabbing data from Indeed API *********************/
 
-  //Placeholder queries
-  var job = "software+engineer";
-  var publisherId = "123456789";
-  var geoLocation = "seattle%2C+wa";
-  var state = geoLocation.slice(-2);
-  var limit = "10";
-  var radius = "25";
-  var fullTime = true;
-  // if ($("#userId").text() !== "") {
-  //   getId();
-  // }
-  if (user.id) {
-    registerSocketListener();
+  function afterChatBot(geoLocation, job, state) {
+    var fullTime = true;
+    var jobTemp = "";
+    var jobArray;
+    if (job.includes(" ")) {
+      jobArray = job.split(" ");
+      console.log(jobArray);
+      for (var i = 0; i < jobArray.length; i++) {
+        jobTemp += jobArray[i] + "+";
+      }
+      job = jobTemp.substring(0, jobTemp.length - 1);
+      console.log(job);
+    }
+    console.log(geoLocation);
+    console.log(job);
+
     deleteUnsaved();
     getId();
     console.log("here2");
@@ -298,10 +319,3 @@ $(document).ready(function() {
     getSavedJobs();
   });
 });
-//makes call to dialogFlow using socket.io
-function registerSocketListener() {
-  socket.on("jobSearch", function(data) {
-    console.log("job search event received");
-    console.log(data);
-  });
-}

@@ -71,35 +71,31 @@
     {{!-- <div class="container-fluid"> --}}
       <div class="mx-auto">
         <!--Carousel Wrapper-->
-        <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+        <div id="slide-targets" class="carousel slide carousel-multi-item" data-ride="carousel">
 
           <!--Controls-->
           <div class="controls clearfix">
-            <a class="btn-floating" href="#multi-item-example" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
-            <a class="btn-floating" href="#multi-item-example" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+            <a class="btn-floating" href="#slide-targets" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
+            <a class="btn-floating" href="#slide-targets" data-slide="next"><i class="fa fa-chevron-right"></i></a>
           </div>
           <!--/.Controls-->
 
           <!--Indicators-->
           <ol class="carousel-indicators">
-            <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
-            <li data-target="#multi-item-example" data-slide-to="1"></li>
-            <li data-target="#multi-item-example" data-slide-to="2"></li>
+            <li data-target="#slide-targets" data-slide-to="0" class="active"></li>
+            <li data-target="#slide-targets" data-slide-to="1"></li>
+            <li data-target="#slide-targets" data-slide-to="2"></li>
           </ol>
           <!--/.Indicators-->
 
           <!--Slides-->
-          <div class="carousel-inner" role="listbox" id = "cards">
-            <!--First slide-->
-            <div class="carousel-item active">
-            {{!-- <div class="col-md-4" id="cards"></div> --}}
-                {{!-- {{> carousel }} --}}
-              </div>
-            </div>
+          <div class="carousel-inner mx-auto" role="listbox" id = "cards">
+            <div id="item1" class="carousel-item row-equal active"></div>
+            <div id="item2" class="carousel-item row-equal"></div>
+            {{!-- <div id="item3" class="carousel-item"></div> --}}
           </div>
           <!--/.Slides-->
 
-        </div>
         <!--/.Carousel Wrapper-->
 
       </div>
