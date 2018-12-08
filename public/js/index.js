@@ -80,16 +80,22 @@ $(document).ready(function() {
           company: $("<h6 class='company-subtitle mb-2'>"),
           location: $("<h6 class='card-subtitle mb-2 text muted'>"),
           snippet: $("<p class='job-snippet'>"),
-          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
-          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>"),
+          applyButton: $("<button class='btn btn-primary apply'>")
         };
-
         var jobInfo = {
           jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
           company: cardTemplate.company.text(job.company),
           location: cardTemplate.location.text(job.location),
-          saveButton: cardTemplate.saveButton.attr("id", job.id)
+          saveButton: cardTemplate.saveButton.attr("id", job.id),
+          applyButton: cardTemplate.applyButton.attr(
+            "link",
+            $(job.url)
+              .find("a:first")
+              .attr("href")
+          )
         };
+        cardTemplate.applyButton.text("Apply");
 
         function generateCard(carouselItem) {
           var col = $("<div class='col-md-4'></div>");
@@ -107,7 +113,6 @@ $(document).ready(function() {
       }
       for (var i = 0; i < data.length; i++) {
         var job = data[i];
-        apply.text("Apply");
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),
@@ -116,7 +121,6 @@ $(document).ready(function() {
           saveButton: $("<a class ='btn btn-primary save'>Save Job</a>"),
           applyButton: $("<button class='btn btn-primary apply'>")
         };
-
         var save = $("<div class = 'btn btn-primary save'></div>");
         save.text("Save Job");
         save.attr("id", job.id);
@@ -132,6 +136,8 @@ $(document).ready(function() {
               .attr("href")
           )
         };
+        cardTemplate.applyButton.text("Apply");
+
         console.log(job.url);
 
         function generateCard(carouselItem) {
