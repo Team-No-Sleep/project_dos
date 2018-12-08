@@ -75,40 +75,73 @@ $(document).ready(function() {
       console.log(data[4]);
 
       console.log("refresh examples end");
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < 3; i++) {
         var job = data[i];
-        console.log("here");
-        console.log(data.length);
-        var col = $("<div class='col-md-4'></div>");
-        var card = $("<div class = 'card'></div>");
-        var cardBody = $("<div class = 'card-body'></div>");
-        var cardTitle = $("<h4 class = 'card-title'>");
 
-        cardTitle.text(job.jobtitle);
-        var cardSubtitle1 = $("<h6 class='card-subtitle mb-2'>");
-        cardSubtitle1.text(job.company);
-        var cardSubtitle2 = $("<h6 class='card-subtitle mb-2 text muted'>");
-        cardSubtitle2.text(job.location);
-        var cardText = $("<p class='card-text'>");
-        cardText.html(job.snippet);
-        var apply = $("<a class='btn btn-primary'>");
-        apply.text("Apply");
-        var save = $("<div class = 'btn btn-primary save'></div>");
-        save.text("Save Job");
-        save.attr("id", job.id);
+        var cardTemplate = {
+          jobTitle: $("<h4 class='job-title'>"),
+          company: $("<h6 class='company-subtitle mb-2'>"),
+          location: $("<h6 class='card-subtitle mb-2 text muted'>"),
+          snippet: $("<p class='job-snippet'>"),
+          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+        };
 
-        apply.append(save);
-        cardText.append(apply);
-        cardSubtitle2.append(cardText);
-        cardSubtitle1.append(cardSubtitle2);
-        cardTitle.append(cardSubtitle1);
-        cardBody.append(cardTitle);
-        card.append(cardBody);
-        col.append(card);
-        //item.append(col);
-        $("#cards").append(col);
+        var jobInfo = {
+          jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
+          company: cardTemplate.company.text(job.company),
+          location: cardTemplate.location.text(job.location),
+          saveButton: cardTemplate.saveButton.attr("id", job.id)
+        };
+
+        function generateCard(carouselItem) {
+          var col = $("<div class='col-md-4'></div>");
+          var card = $("<div class='card'></div>");
+          var cardBody = $("<div class='card-body'></div>");
+          col.append(card);
+          card.append(cardBody);
+          jobInfo; //fills in relevant data
+          Object.keys(cardTemplate).forEach(function(item) {
+            cardBody.append(cardTemplate[item]);
+          });
+          $(carouselItem).append(col);
+        }
+        generateCard("#item1");
       }
-      // console.log(data);
+      for (var i = 3; i < data.length; i++) {
+        var job = data[i];
+
+        var cardTemplate = {
+          jobTitle: $("<h4 class='job-title'>"),
+          company: $("<h6 class='company-subtitle mb-2'>"),
+          location: $("<h6 class='card-subtitle mb-2 text muted'>"),
+          snippet: $("<p class='job-snippet'>"),
+          applyButton: $("<a class='btn btn-primary'>Apply</a>"),
+          saveButton: $("<a class ='btn btn-primary save'>Save Job</a>")
+        };
+
+        var jobInfo = {
+          jobTitle: cardTemplate.jobTitle.text(job.jobtitle),
+          company: cardTemplate.company.text(job.company),
+          location: cardTemplate.location.text(job.location),
+          saveButton: cardTemplate.saveButton.attr("id", job.id)
+        };
+
+        function generateCard(carouselItem) {
+          var col = $("<div class='col-md-4'></div>");
+          var card = $("<div class='card'></div>");
+          var cardBody = $("<div class='card-body'></div>");
+          col.append(card);
+          card.append(cardBody);
+          jobInfo; //fills in relevant data
+          Object.keys(cardTemplate).forEach(function(item) {
+            cardBody.append(cardTemplate[item]);
+          });
+          $(carouselItem).append(col);
+        }
+        generateCard("#item2");
+      }
+      console.log(data);
     });
   };
 
