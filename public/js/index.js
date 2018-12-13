@@ -4,6 +4,8 @@ $(document).ready(function() {
   $(document).on("click", ".deleteSaved", deleteSaved);
   var userTableId;
   registerSocketListener();
+  // This function allows the front end to use the user's LinkedIn id to grab
+  // the associative value of the user in the job's table
   function getId() {
     console.log("getid start");
     $.ajax({
@@ -17,21 +19,24 @@ $(document).ready(function() {
   }
 
   var API = {
-    saveExample: function(example, apiName) {
+    // Sends a request to the back-end to save the retrieved
+    // into the jobs table
+    putJob: function(Job, apiName) {
       console.log(userTableId);
-      //console.log("save example start");
+      //console.log("save Job start");
       return $.ajax({
         headers: {
           "Content-Type": "application/json"
         },
         type: "POST",
         url: "/api/jobs/" + apiName + "/" + userTableId,
-        data: JSON.stringify(example)
+        data: JSON.stringify(Job)
       }).then(function(response) {
-        //console.log("save example done");
+        //console.log("save Job done");
       });
     },
-    getExamples: function() {
+    // Sends a request to the back-end to retrieve all jobs the user searched for
+    getJobs: function() {
       console.log(userTableId);
       return $.ajax({
         url: "/api/jobs" + "/" + userTableId,
@@ -42,7 +47,6 @@ $(document).ready(function() {
     // are deleted from the database
     deleteUnsaved: function() {
       console.log("DELETING");
-      console.log(userTableId);
       return $.ajax({
         url: "/api/jobs",
         type: "DELETE"
@@ -51,33 +55,36 @@ $(document).ready(function() {
       });
     },
 
-    deleteExample: function(id) {
-      return $.ajax({
-        url: "/api/jobs/" + id,
+    // Deletes the saved job from the jobs table
+    deleteSaved: function(id) {
+      $.ajax("/api/jobs/" + id, {
         type: "DELETE"
       });
     },
 
+    // Sends a request to the back-end to return all jobs the user has saved
     getSavedJobs: function() {
       return $.ajax({
         url: "/api/jobs/saved/" + userTableId,
         type: "GET"
       });
+    },
+
+    saveJob: function(id) {
+      $.ajax("/api/jobs/" + id, {
+        type: "PUT"
+      });
     }
   };
 
-  // refreshExamples gets new examples from the db and repopulates the list
-  var refreshExamples = function() {
-    console.log("refresh examples start");
-    API.getExamples().then(function(data) {
-      console.log(data.length);
-
-      // THIS IS WHERE WE WOULD SEND THE DATA TO THE CARDS??
-      console.log("refresh examples end");
+  // Gets all new jobs and populates them into the carousel cards
+  var refreshJobs = function() {
+    console.log("refresh Jobs start");
+    API.getJobs().then(function(data) {
+      console.log("refresh Jobs end");
+      console.log(data);
       for (var i = 0; i < data.length; i++) {
-        // console.log("making card")
         var job = data[i];
-        console.log(job);
         var cardTemplate = {
           jobTitle: $("<h4 class='job-title'>"),
           company: $("<h6 class='company-subtitle mb-2'>"),
@@ -140,9 +147,6 @@ $(document).ready(function() {
           )
         };
         cardTemplate.applyButton.text("Apply");
-
-        console.log(job.url);
-
         function generateCard(carouselItem) {
           var col = $("<div class='col-md-4'></div>");
           var card = $("<div class='card'></div>");
@@ -158,11 +162,11 @@ $(document).ready(function() {
         generateCard("#item2");
       }
       $(".controls").attr("class", "controls clearfix");
-
-      console.log(data);
     });
   };
 
+  // Gets the user's saved jobs from the jobs table and then populates
+  // a modal with the user's saved jobs
   var getSavedJobs = function() {
     API.getSavedJobs().then(function(data) {
       $("#saved").empty();
@@ -235,24 +239,23 @@ $(document).ready(function() {
     });
   };
 
-  //makes call to dialogFlow using socket.io
+  // Makes call to dialogFlow using socket.io
+  // and then calls afterChatBot with the user's responses
   function registerSocketListener() {
     socket.on("jobSearch", function(data) {
       console.log(data);
       console.log("job search event received");
-      afterChatBot(
-        data.city.stringValue,
-        data.jobPosition.stringValue,
-        data.state.stringValue
-      );
+      afterChatBot(data.city.stringValue, data.jobPosition.stringValue);
     });
   }
-  /***************** Grabbing data from Indeed API *********************/
 
+  // This checks if the user has successfully logged in using LinkedIn and gets
+  // the id of the user in the user table
   if (user.id) {
     getId();
   }
-  function afterChatBot(geoLocation, job, state) {
+  // 
+  function afterChatBot(geoLocation, job) {
     var fullTime = true;
     var jobTemp = "";
     var jobArray;
@@ -269,7 +272,8 @@ $(document).ready(function() {
     console.log(job);
 
     deleteUnsaved();
-    console.log("here2");
+
+    // gov api call
     // $.ajax({
     //   url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
     //   method: "GET"
@@ -285,7 +289,7 @@ $(document).ready(function() {
       method: "GET"
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
-        API.saveExample(response[i], "github");
+        API.putJob(response[i], "github");
       }
     });
 
@@ -293,40 +297,35 @@ $(document).ready(function() {
       url: "/api/jobs/authentic/" + job + "/" + geoLocation + "/" + true,
       method: "GET"
     }).then(function(response) {
-      // console.log(response);
       for (var i = 0; i < response.length; i++) {
-        // Will add new jobs to the db without saving them
-        API.saveExample(response[i], "authentic");
+        // Will add new jobs to the db
+        API.putJob(response[i], "authentic");
       }
-      // Will console.log all newly added jobs that aren't saved
-      // expect 6
-      refreshExamples();
-      // Will console.log all saved jobs
-      // expect 3
+      refreshJobs();
     });
   }
   // When a save button gets clicked then do a PUT operation to
-  // make saved true. This doesn't work yet
+  // make saved true.
   function saveJob() {
-    console.log("hey");
-    $.ajax("/api/jobs/" + this.id, {
-      type: "PUT"
-    });
+    console.log("saving");
+    API.saveJob(this.id);
   }
 
+  // When apply button is clicked the window changes to the job posting's apply page
   function applyJob() {
     console.log("redirecting to apply website");
     window.open(this.getAttribute("link"));
   }
 
+  // When delete saved job button is clicked this calls on the API
+  // to delete the job
   function deleteSaved() {
     console.log(this.id);
     $("#savedDiv" + this.id).empty();
-    $.ajax("/api/jobs/" + this.id, {
-      type: "DELETE"
-    });
+    API.deleteSaved(this.id);
   }
 
+  // When the saved jobs button gets clicked it displays the saved jobs
   $("#getSavedJobs").on("click", function() {
     getSavedJobs();
   });
