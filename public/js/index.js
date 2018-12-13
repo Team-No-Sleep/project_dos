@@ -273,6 +273,17 @@ $(document).ready(function() {
 
     deleteUnsaved();
 
+    // gov api call
+    // $.ajax({
+    //   url: "/api/jobs/gov/" + job + "/" + state + "/" + fullTime,
+    //   method: "GET"
+    // }).then(function(response) {
+    //   for (var i = 0; i < response.length; i++) {
+    //     // console.log(response[i]);
+    //     API.saveExample(response[i], "gov");
+    //   }
+    // });
+
     $.ajax({
       url: "/api/jobs/github/" + job + "/" + geoLocation + "/" + fullTime,
       method: "GET"

@@ -128,6 +128,28 @@ module.exports = function(app) {
         res.json(dbJob);
       });
     }
+    //   else if (req.params.apiName === "gov") {
+    //   var locations = "";
+    //   for (var i = 0; i < req.body.locations.length; i++) {
+    //     locations += req.body.locations[i];
+    //   }
+    //   console.log(locations);
+    //   db.Job.create({
+    //     jobtitle: req.body.position_title,
+    //     company: req.body.organization_name,
+    //     location: locations,
+    //     date: req.body.start_date,
+    //     snippet: "",
+    //     url: req.body.url,
+    //     type: "Full-Time",
+    //     saved: false,
+    //     applied: false,
+    //     UserId: req.params.userTableId
+    //   }).then(function(dbJob) {
+    //     //console.log("end save jobs");
+    //     res.json(dbJob);
+    //   });
+    // }
   });
 
   // Delete unsaved jobs
