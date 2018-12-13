@@ -28,6 +28,7 @@ module.exports = function(app) {
     });
   });
 
+  // Gets jobs returned by github and Authentic job search APIs
   app.get("/api/jobs/:apiName/:job/:location/:fullTime", function(req, res) {
     //console.log(req.body.data);
     var data;
@@ -66,6 +67,7 @@ module.exports = function(app) {
       } else {
         fullTime = "parttime";
       }
+      var location = req.params.location;
       var query = fullTime + "+" + req.params.job + "+" + "jobs+in+";
       var location = req.params.location;
       var queryURL =
@@ -92,7 +94,7 @@ module.exports = function(app) {
     });
   });
 
-  // github jobs
+  // Posts jobs to the database
   app.post("/api/jobs/:apiName/:userTableId", function(req, res) {
     //console.log("start save jobs");
     if (req.params.apiName === "github") {
@@ -108,7 +110,6 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
-        //console.log("end save jobs");
         res.json(dbJob);
       });
     } else if (req.params.apiName === "authentic") {
@@ -124,28 +125,6 @@ module.exports = function(app) {
         applied: false,
         UserId: req.params.userTableId
       }).then(function(dbJob) {
-        //console.log("end save jobs");
-        res.json(dbJob);
-      });
-    } else if (req.params.apiName === "gov") {
-      var locations = "";
-      for (var i = 0; i < req.body.locations.length; i++) {
-        locations += req.body.locations[i];
-      }
-      console.log(locations);
-      db.Job.create({
-        jobtitle: req.body.position_title,
-        company: req.body.organization_name,
-        location: locations,
-        date: req.body.start_date,
-        snippet: "",
-        url: req.body.url,
-        type: "Full-Time",
-        saved: false,
-        applied: false,
-        UserId: req.params.userTableId
-      }).then(function(dbJob) {
-        //console.log("end save jobs");
         res.json(dbJob);
       });
     }
@@ -162,14 +141,14 @@ module.exports = function(app) {
     });
   });
 
-  // Delete a job by id
+  // Delete a saved job by id
   app.delete("/api/jobs/:id", function(req, res) {
     db.Job.destroy({ where: { id: req.params.id } }).then(function(dbJob) {
       res.json(dbJob);
     });
   });
 
-  // Update saved status
+  // Update saved status of a job
   app.put("/api/jobs/:id", function(req, res) {
     db.Job.update(
       {
@@ -197,6 +176,7 @@ module.exports = function(app) {
   );
   //**********************************/
 
+  // Returns the id of the user in the jobs table
   app.get("/api/user/:userId", function(req, res) {
     //console.log(req.params.userId);
     db.User.findAll({
@@ -207,11 +187,5 @@ module.exports = function(app) {
     }).then(function(dbUser) {
       res.json(dbUser);
     });
-    // console.log(req.body.userId);
-    // res.render("chat", {
-    //   userId: {
-    //     id: req.body.userId
-    //   }
-    // });
   });
 };
